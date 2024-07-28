@@ -12,4 +12,4 @@ You will need to have dotnet 8 installed in order to build the compiler
 
 # Docs
 
-You can find the language specs [here](./mockups/specs.md).
+You can find the language specs [here](./Mockups/specs.md).
