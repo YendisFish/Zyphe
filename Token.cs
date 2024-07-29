@@ -55,7 +55,8 @@ public class Token
         TRY,
         CATCH,
         THIS,
-        USING
+        USING,
+        DELEGATE
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -108,5 +109,6 @@ public class Token
         { "catch", KeywordType.CATCH },
         { "this", KeywordType.THIS },
         { "using", KeywordType.USING },
+        { "delegate", KeywordType.DELEGATE },
     };
 }
