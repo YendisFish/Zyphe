@@ -58,7 +58,7 @@ struct MyStruct {
     }
     
     //you can do conversions with the this keyword
-    this string {
+    string this {
         get {
             return this.x;    
         }
