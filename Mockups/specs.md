@@ -280,7 +280,7 @@ let a: char = z;
 Since Zyphe utilizes ARC for memory, it makes circular references
 hard to deal with. For this, the ``using`` keyword exists. This allows
 you to create a reference that is not tracked by ARC, but is the same
-as a ``ref`` in every other way. This reference 
+as a ``ref`` in every other way.
 
 ```csharp
 struct LinkedList {
