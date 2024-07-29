@@ -7,7 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <Target Name="CopyCustomContentOnPublish" AfterTargets="Publish">
-    <Copy SourceFiles="./Mockups/*" DestinationFolder="$(PublishDir)/Mockups/" />
-  </Target>
+  <ItemGroup>
+    <Content Include="./Mockups/*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
