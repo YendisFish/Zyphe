@@ -5,6 +5,6 @@
     if(x == 5) {
         ref x2: int = &x;
         
-        io.conout((int)&x); //printing out the addr
+        io.conout((let int)&x); //printing out the addr
     }
 }
