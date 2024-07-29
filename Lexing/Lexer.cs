@@ -83,5 +83,5 @@ public class Lexer
         toks.Where(x => x.type != Token.TokenType.WHITESPACE &&
                         x.type != Token.TokenType.NEWLINE &&
                         x.type != Token.TokenType.NULL &&
-                        (x.type == Token.TokenType.WORD && ((string?)x.value)?.Trim() == "") == false).ToArray(); 
+                        (x.type == Token.TokenType.WORD && string.IsNullOrWhiteSpace((string?)x.value)) == false).ToArray();
 }
