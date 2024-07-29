@@ -69,8 +69,9 @@ public class Lexer
             {
                 currentToken.type = Token.TokenType.WORD;
                 currentToken.keyword = keyword;
+                currentToken.value = current;
                 ret.Add(currentToken);
-
+                
                 currentToken = new();
                 current = "";
             }
