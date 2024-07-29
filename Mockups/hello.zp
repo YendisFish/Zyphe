@@ -1,0 +1,10 @@
+﻿void Main() {
+    io.conout("Hello, World!");
+    
+    let x = 5;
+    if(x == 5) {
+        ref x2: int = &x;
+        
+        io.conout((int)&x); //printing out the addr
+    }
+}

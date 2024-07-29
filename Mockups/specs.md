@@ -8,8 +8,9 @@ const y = new MyStruct(); // immutable variable
 ```cs
 let x = 5;
 
-ref someRef = x; //automatically makes reference since its a reference type
-ref someOtherRef = someRef; //error, only shallow references are allowed
+ref someRef = &x; //automatically makes reference since its a reference type
+ref someOtherRef = &someRef; //error, only shallow references are allowed
+ref anotherRef = someRef; // copies over reference
 
 /*
 The reason this is implemented this way is to prevent people from just spamming references where they aren't needed
