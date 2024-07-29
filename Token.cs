@@ -85,8 +85,8 @@ public class Token
     public static Dictionary<string, KeywordType> keywordMatches = new Dictionary<string, KeywordType>
     {
         { "if", KeywordType.IF },
-        { "FOR", KeywordType.FOR },
-        { "WHILE", KeywordType.WHILE },
+        { "for", KeywordType.FOR },
+        { "while", KeywordType.WHILE },
         { "private", KeywordType.PRIVATE },
         { "static", KeywordType.STATIC },
         { "let", KeywordType.LET },
