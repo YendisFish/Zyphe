@@ -275,3 +275,21 @@ ref z: char = &y[0];
 
 let a: char = z;
 ```
+
+# Circular References
+Since Zyphe utilizes ARC for memory, it makes circular references
+hard to deal with. For this, the ``using`` keyword exists. This allows
+you to create a reference that is not tracked by ARC, but is the same
+as a ``ref`` in every other way. This reference 
+
+```csharp
+struct LinkedList {
+    ref head: Node<int> { get; set; }
+}
+
+struct Node<T> {
+    using prev: Node<T> { get; set; }
+    let value: T { get; set; }
+    ref next: Node<T> { get; set; }
+}
+```
