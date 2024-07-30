@@ -113,7 +113,7 @@ obj2.x = 100;
 ```ts
 let x = try {
     throw new Error();
-} : (Exception ex) => {
+} : (let ex: Exception) => {
     return 5;
 }
 
