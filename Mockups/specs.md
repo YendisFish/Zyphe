@@ -111,7 +111,7 @@ obj2.x = 100;
 # Errors
 
 ```ts
-let x = try {
+let x = try(let someResult: Result<int> = SomeResultFunction()) {
     throw new Error();
 } : (let ex: Exception) => {
     return 5;
@@ -125,12 +125,21 @@ let z: int = try {} : default /* (Exception ex) => int.default */;
 ```
 
 ```ts
-try {
+try(let someResult: Result<int> = SomeResultFunction) {
     
 } catch(let exception: Exception) {
     
 }
+```
 
+Errors can also be integers:
+
+```ts
+try(let result: int = SendGetRequest("https://mysite.com/someinfo")) {
+    //executes if result is 0
+} catch(let exception: int) {
+    //executes if result is not 0
+}
 ```
 
 # Indexers
