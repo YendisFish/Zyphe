@@ -7,27 +7,51 @@ public class AST
 
 public abstract record AstNode
 {
+    public AstNode parent { get; set; }
     public Scope Scope { get; init; }
-    public AstNode children { get; set; }
+    public List<AstNode> child { get; set; } = new();
 }
 
 public record Expression() : AstNode
 {
     public record BinaryOperator(Expression left, Expression right) : Expression;
     public record UnaryOperator(Expression expr) : Expression;
-    public record VariableExpression(string name, Expression right) : Expression;
+    public record VariableAssignment(string name, Expression right) : Expression;
+    public record VariableReference(string name) : Expression;
+    public record FunctionReference(string name) : Expression;
+    public record Literal(string word) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
+    public record BooleanOperator(Expression left, Expression right) : Expression;
 }
 
 public abstract record Declaration(Namespace? nspace) : AstNode
 {
     public Declaration() : this(nspace: null) { }
 
-    public record VariableDeclaration(VariableInfo left, Expression right) : Declaration;
+    public record VariableDeclaration(VariableInfo left, Expression initializer) : Declaration;
     public record FunctionDeclaration(FunctionSignature signature) : Declaration;
     public record StructDeclaration(StructInfo info) : Declaration;
 }
 
-// todo : IMPLEMENT STATEMENT NODES
+public abstract record Statement() : AstNode
+{
+    public record IfStatement(Expression condition, AstNode thenBlock, AstNode? elseBlock = null /*else block will always be filled with alternative branch*/) : Statement;
+    public record WhileStatement(Expression.BooleanOperator condition, AstNode doThis) : Statement;
+
+    public record ForStatement(
+        Declaration.VariableDeclaration? declaration,
+        Expression.BooleanOperator? condition,
+        Expression expression) : Statement;
+
+    public record FromStatement(Expression.FunctionReference func, List<Case> cases, Default? fallback = null) : Statement;
+
+    public record TryCatchStatement(
+        Expression.FunctionReference target,
+        Declaration.VariableDeclaration catchVar,
+        AstNode tblock,
+        AstNode cblock) : Statement;
+
+    public record SwitchStatement(Expression.VariableReference reference, List<Case> cases, Default? fallback = null) : Statement;
+}
 
 /*
     void Main() {
