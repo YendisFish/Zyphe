@@ -1,5 +1,6 @@
 ﻿using System;
 using Zyphe;
+using Zyphe.Parser;
 
 string fle = File.ReadAllText("./Mockups/hello.zp");
 
@@ -14,3 +15,5 @@ foreach (var token in toks)
     Logger.Log("--------------------------------------");
 }
 
+Parser parser = new Parser(toks);
+parser.Parse();

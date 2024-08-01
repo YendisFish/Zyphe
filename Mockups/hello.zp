@@ -1,4 +1,4 @@
-﻿void Main() {
+﻿private int Main() {
     io.conout("Hello, World!");
     
     let x = 5;
@@ -8,3 +8,7 @@
         io.conout((let int)&x); //printing out the addr
     }
 }
+
+AIJSDHFIOKSDHJF test() {}
+
+ref doesthiswork anotherTest() {}

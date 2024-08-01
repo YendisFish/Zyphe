@@ -3,11 +3,13 @@
 public record VariableInfo(
     VariableIdentifier vType, 
     string name, 
-    string type,
+    TypeInfo type,
     Declaration.FunctionDeclaration? getter, 
     Declaration.FunctionDeclaration? setter,
     bool isProp = false
 );
+
+public record TypeInfo(string name, List<Generic>? generics = null);
 
 public enum VariableIdentifier
 {

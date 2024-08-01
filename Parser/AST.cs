@@ -2,14 +2,20 @@
 
 public class AST
 {
-    public AstNode Root { get; set; }
+    public AstNode Root { get; set; } = new AstNode();
 }
 
-public abstract record AstNode
+public record AstNode
 {
-    public AstNode parent { get; set; }
+    public AstNode? parent { get; set; }
     public Scope Scope { get; init; }
-    public List<AstNode> child { get; set; } = new();
+    public List<AstNode> children { get; set; } = new();
+
+    public AstNode()
+    {
+        parent = null;
+        Scope = new();
+    }
 }
 
 public record Expression() : AstNode

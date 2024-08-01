@@ -302,3 +302,19 @@ struct Node<T> {
     ref next: Node<T> { get; set; }
 }
 ```
+
+# Custom Operators
+
+```csharp
+struct MyStruct {
+    ref myStr: string = "Hello, World!";
+    
+    void this +(let right: string) {
+        this.myStr = this.myStr + right;
+    }
+    
+    void this -(let right: string) {
+        this.myStr.Replace(right, "");
+    }
+}
+```

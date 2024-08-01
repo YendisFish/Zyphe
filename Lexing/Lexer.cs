@@ -65,8 +65,17 @@ public class Lexer
             
             //match keywords to keyword enum
             Token.KeywordType keyword = new();
-            if (Token.keywordMatches.TryGetValue(current, out keyword))
+            if (Token.keywordMatches.TryGetValue(current, out keyword)/* && (!string.IsNullOrWhiteSpace("" + file[i + 1])) || !Token.tokenMatches.ContainsKey(file[i + 1])*/)
             {
+                //this prevents the lexer from attempting to parse doSomething (includes "do") into 2 tokens
+                if (i <= file.Length - 2)
+                {
+                    if ((!string.IsNullOrWhiteSpace("" + file[i + 1])) || !Token.tokenMatches.ContainsKey(file[i + 1]))
+                    {
+                        continue;
+                    }
+                }
+                
                 currentToken.type = Token.TokenType.WORD;
                 currentToken.keyword = keyword;
                 currentToken.value = current;
