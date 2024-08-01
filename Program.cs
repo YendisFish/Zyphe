@@ -17,3 +17,5 @@ foreach (var token in toks)
 
 Parser parser = new Parser(toks);
 parser.Parse();
+
+Console.WriteLine("Done Compiling!");

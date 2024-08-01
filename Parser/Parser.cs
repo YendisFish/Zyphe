@@ -6,6 +6,8 @@ public partial class Parser
     public int index { get; set; } = 0;
     public AST ast { get; set; }
     public AstNode currentNode { get; set; }
+    public ParserState state { get; set; } = ParserState.GLOBAL;
+    public List<string> declaredVariables { get; set; } = new();
 
     public Parser(Token[] toks)
     {
@@ -25,9 +27,26 @@ public partial class Parser
                     this.ConsumeWord();
                     break;
                 }
+
+                case Token.TokenType.RBRACE:
+                {
+                    if (state == ParserState.FUNCTION || state == ParserState.STRUCT)
+                    {
+                        state = ParserState.GLOBAL;
+                        currentNode = ast.Root;
+                        index = index + 1;
+                    } else {
+                        index = index + 1;
+                    }
+                    
+                    break;
+                }
+                default:
+                {
+                    index = index + 1;
+                    break;
+                }
             }
-            
-            index = index + 1;
         }
     }
 
@@ -37,6 +56,18 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.STRUCT:
+            {
+                index = index + 1;
+                string name = (string)tokens[index].value;
+
+                StructInfo sInfo = new StructInfo(name, this.ConsumeGenerics(), null);
+                Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
+
+                currentNode.children.Add(structDecl);
+                
+                break;
+            }
             case Token.KeywordType.PRIVATE:
             {
                 #region Handle Functions
@@ -65,6 +96,21 @@ public partial class Parser
                 
                 break;
             }
+            case Token.KeywordType.LET:
+            {
+                switch (state)
+                {
+                    case ParserState.FUNCTION:
+                    {
+                        state = ParserState.VARIABLE;
+                        index = index + 1;
+                        
+                        this.ConsumeLetVariable();
+                        break;
+                    }
+                }
+                break;
+            }
             default:
             {
                 if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
@@ -89,4 +135,13 @@ public partial class Parser
             index = index + 1;
         }
     }
+}
+
+public enum ParserState
+{
+    FUNCTION,
+    VARIABLE,
+    STRUCT,
+    TYPECAST,
+    GLOBAL
 }

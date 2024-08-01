@@ -1,14 +1,7 @@
 ﻿private int Main() {
-    io.conout("Hello, World!");
-    
     let x = 5;
-    if(x == 5) {
-        ref x2: int = &x;
-        
-        io.conout((let int)&x); //printing out the addr
-    }
 }
 
-AIJSDHFIOKSDHJF test() {}
+struct CoolStruct {
 
-ref doesthiswork anotherTest() {}
+}

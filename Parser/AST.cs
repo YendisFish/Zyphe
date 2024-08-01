@@ -33,7 +33,7 @@ public abstract record Declaration(Namespace? nspace) : AstNode
 {
     public Declaration() : this(nspace: null) { }
 
-    public record VariableDeclaration(VariableInfo left, Expression initializer) : Declaration;
+    public record VariableDeclaration(VariableInfo left, Expression? initializer) : Declaration;
     public record FunctionDeclaration(FunctionSignature signature) : Declaration;
     public record StructDeclaration(StructInfo info) : Declaration;
 }

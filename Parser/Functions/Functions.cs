@@ -13,7 +13,7 @@ public partial class Parser
                 case VariableIdentifier.LET:
                 {
                     FunctionSignature signature = new FunctionSignature(
-                        new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.LET, this.ConsumeFunctionType()),
+                        new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.LET, this.ConsumeType()),
                         (string)tokens[index].value,
                         privateContext
                     );
@@ -21,8 +21,9 @@ public partial class Parser
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
                     
                     currentNode.children.Add(declaration);
-                    
-                    this.ReadToToken(Token.TokenType.RBRACE); // CHANGE TO LBRACE | EQUALS
+                    this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS
+                    currentNode = declaration;
+                    state = ParserState.FUNCTION;
                     
                     break;
                 }
@@ -31,7 +32,7 @@ public partial class Parser
                 {
                     index = index + 1;
                     FunctionSignature signature = new FunctionSignature(
-                        new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.REF, this.ConsumeFunctionType()),
+                        new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.REF, this.ConsumeType()),
                         (string)tokens[index].value,
                         privateContext
                     );
@@ -39,8 +40,9 @@ public partial class Parser
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
                     
                     currentNode.children.Add(declaration);
-                    
-                    this.ReadToToken(Token.TokenType.RBRACE); // CHANGE TO LBRACE | EQUALS
+                    this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS
+                    currentNode = declaration;
+                    state = ParserState.FUNCTION;
                     
                     break;
                 }
@@ -51,7 +53,7 @@ public partial class Parser
         }
     }
 
-    public TypeInfo ConsumeFunctionType()
+    public TypeInfo ConsumeType()
     {
         string typeName = (string)tokens[index].value;
         
