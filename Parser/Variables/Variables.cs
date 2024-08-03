@@ -11,15 +11,15 @@ public partial class Parser
         Expression? expr = null;
         index = index + 1;
 
+        if (tokens[index].type == Token.TokenType.COLON)
+        {
+            index = index + 1;
+            tInfo = this.ConsumeVarType();
+        }
+        
+        typeReturn:
         switch (tokens[index].type)
         {
-            case Token.TokenType.COLON:
-            {
-                index = index + 1;
-                tInfo = this.ConsumeType();
-                break;
-            }
-
             case Token.TokenType.EQUALS:
             {
                 index = index + 1;
@@ -58,5 +58,20 @@ public partial class Parser
         TypeInfo? tInfo = null;
         Expression? expr = null;
         index = index + 1;
+    }
+    
+    public TypeInfo ConsumeVarType()
+    {
+        string typeName = (string)tokens[index].value;
+        
+        if (tokens[index].type == Token.TokenType.LALLIGATOR)
+        {
+            // todo: implement generic parsing
+            index = index + 1; //take this out and have the generics leave you on the word token
+        }
+        
+        this.ReadToToken(Token.TokenType.EQUALS);
+        
+        return new TypeInfo(typeName);
     }
 }

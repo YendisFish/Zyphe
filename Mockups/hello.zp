@@ -1,13 +1,3 @@
-﻿int Main() {
-    if(1 == 1) {
-        while(1 == 1) {
-            let x = 4;
-                
-            if(x == 4) {
-                let y = 3;
-            }
-        }
-    }
-    
-    let asdf = 7 + 9 / 2;
+﻿void Main() {
+    let x: int = 4;
 }
