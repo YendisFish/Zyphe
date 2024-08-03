@@ -71,6 +71,13 @@ public partial class Parser
                             break;
                         }
 
+                        case ParserState.WHILE:
+                        {
+                            currentNode = currentNode.Scope.returnNode;
+                            this.Next();
+                            break;
+                        }
+                        
                         default:
                         {
                             this.Next();
@@ -101,6 +108,13 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.WHILE:
+            {
+                index = index + 2;
+                this.ConsumeWhileLoop(state);
+                break;
+            }
+                
             case Token.KeywordType.ELSE:
             {
                 this.Next();
@@ -164,7 +178,8 @@ public partial class Parser
                 {
                     case ParserState.FUNCTION:
                     case ParserState.IF:
-                    case ParserState.ELSE: 
+                    case ParserState.ELSE:
+                    case ParserState.WHILE:    
                     {
                         index = index + 1;
                         this.ConsumeLetVariable(state);
@@ -226,5 +241,6 @@ public enum ParserState
     TYPECAST,
     IF,
     ELSE,
+    WHILE,
     GLOBAL
 }

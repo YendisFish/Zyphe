@@ -52,7 +52,7 @@ public abstract record Statement() : AstNode
         public bool isIfElse { get; set; } = false;
     }
     
-    public record WhileStatement(Expression.BooleanOperator condition, AstNode doThis) : Statement;
+    public record WhileStatement(Expression.BooleanOperator condition) : Statement;
 
     public record ForStatement(
         Declaration.VariableDeclaration? declaration,
