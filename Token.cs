@@ -3,6 +3,8 @@ public class Token
     public TokenType type { get; set; }
     public KeywordType? keyword { get; set; } = null;
     public object? value { get; set; } = null;
+    public bool isString { get; set; } = false;
+    public bool isChar { get; set; } = false;
 
     public enum TokenType 
     {
@@ -29,7 +31,9 @@ public class Token
         AMPERSAND,
         NEWLINE,
         WHITESPACE,
-        NULL
+        NULL,
+        PIPE,
+        NOT
     }
 
     public enum KeywordType
@@ -57,7 +61,8 @@ public class Token
         THIS,
         USING,
         DELEGATE,
-        ABSTRACT
+        ABSTRACT,
+        ELSE
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -84,6 +89,8 @@ public class Token
         { '\n', TokenType.NEWLINE },
         { ' ', TokenType.WHITESPACE },
         { '\0', TokenType.NULL },
+        { '|', TokenType.PIPE },
+        { '!', TokenType.NOT }
     };
 
     public static Dictionary<string, KeywordType> keywordMatches = new Dictionary<string, KeywordType>
@@ -111,6 +118,7 @@ public class Token
         { "this", KeywordType.THIS },
         { "using", KeywordType.USING },
         { "delegate", KeywordType.DELEGATE },
-        { "abstract", KeywordType.ABSTRACT }
+        { "abstract", KeywordType.ABSTRACT },
+        { "else", KeywordType.ELSE }
     };
 }

@@ -8,6 +8,7 @@ public partial class Parser
     public AstNode currentNode { get; set; }
     public ParserState state { get; set; } = ParserState.GLOBAL;
     public List<string> declaredVariables { get; set; } = new();
+    public Statement.IfStatement? rootStatement { get; set; }
 
     public Parser(Token[] toks)
     {
@@ -18,8 +19,9 @@ public partial class Parser
 
     public void Parse()
     {
-        while (index <= tokens.Length)
+        while (index < tokens.Length)
         {
+            //Console.WriteLine(tokens[index].type);
             switch (tokens[index].type)
             {
                 case Token.TokenType.WORD:
@@ -30,32 +32,92 @@ public partial class Parser
 
                 case Token.TokenType.RBRACE:
                 {
-                    if (state == ParserState.FUNCTION || state == ParserState.STRUCT)
+                    switch (state)
                     {
-                        state = ParserState.GLOBAL;
-                        currentNode = ast.Root;
-                        index = index + 1;
-                    } else {
-                        index = index + 1;
+                        case ParserState.FUNCTION:
+                        case ParserState.STRUCT:
+                        {
+                            state = ParserState.GLOBAL;
+                            currentNode = ast.Root;
+                            this.Next();
+                            break;
+                        }
+
+                        case ParserState.IF:
+                        {
+                            
+                            if (!(index + 1 >= tokens.Length) && tokens[index + 1].keyword == Token.KeywordType.ELSE)
+                            {
+                                this.Next();
+                            } else {
+                                if (currentNode is Statement.IfStatement a &&
+                                    a.Scope.returnNode is Statement.ElseStatement b &&
+                                    b.isIfElse)
+                                {
+                                    currentNode = b.Scope.returnNode;
+                                    //this.Next();
+                                } else if (currentNode is Statement.ElseStatement)
+                                {
+                                    currentNode = currentNode.Scope.returnNode;
+                                    //this.Next();
+                                } else
+                                {
+                                    state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                                    currentNode = currentNode.Scope.returnNode;
+                                    this.Next();
+                                }
+                            }
+                            
+                            break;
+                        }
+
+                        default:
+                        {
+                            this.Next();
+                            break;
+                        }
                     }
                     
                     break;
                 }
                 default:
                 {
-                    index = index + 1;
+                    this.Next();
                     break;
                 }
             }
         }
     }
 
-    public void Next() => index++;
+    public void Next()
+    {
+        if (!(index + 1 > tokens.Length))
+        {
+            index = index + 1;
+        }
+    }
 
     public void ConsumeWord()
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.ELSE:
+            {
+                this.Next();
+                this.ConsumeElse();
+                break;
+            }
+                
+            case Token.KeywordType.IF:
+            {
+                index = index + 2;
+
+                bool isRoot = (state == ParserState.FUNCTION);
+                this.ConsumeIfStatement(isRoot, state);
+                
+                break;
+            }
+            
             case Token.KeywordType.STRUCT:
             {
                 index = index + 1;
@@ -101,11 +163,11 @@ public partial class Parser
                 switch (state)
                 {
                     case ParserState.FUNCTION:
+                    case ParserState.IF:
+                    case ParserState.ELSE: 
                     {
-                        state = ParserState.VARIABLE;
                         index = index + 1;
-                        
-                        this.ConsumeLetVariable();
+                        this.ConsumeLetVariable(state);
                         break;
                     }
                 }
@@ -117,6 +179,12 @@ public partial class Parser
                 {
                     this.ConsumeFunctionSignature(VariableIdentifier.LET);
                 }
+                
+                #region Consume Variable Expression
+                
+                // todo: implement variable expressions
+                
+                #endregion
                 
                 break;
             }
@@ -135,6 +203,19 @@ public partial class Parser
             index = index + 1;
         }
     }
+    
+    public void ReadToWord(Token.KeywordType keyword)
+    {
+        if (tokens[index].keyword == keyword)
+        {
+            index = index + 1;
+        }
+        
+        while (tokens[index].keyword != keyword)
+        {
+            index = index + 1;
+        }
+    }
 }
 
 public enum ParserState
@@ -143,5 +224,7 @@ public enum ParserState
     VARIABLE,
     STRUCT,
     TYPECAST,
+    IF,
+    ELSE,
     GLOBAL
 }

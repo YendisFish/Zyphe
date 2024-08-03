@@ -1,7 +1,19 @@
-﻿private int Main() {
-    let x = 5;
-}
-
-struct CoolStruct {
-
+﻿int Main() {
+    let x = 0;
+    
+    if(x == 5) {
+        let a = 1;
+        
+        if(b == 3) {
+            let z = 5;
+        } else if(4 == 4) {
+            let aaa = 444;
+        }
+    } else if(x == 6) {
+        let b = 2;
+    } else {
+        let c = 3 + (x + 3);
+    }
+    
+    let asdf = 7 + 9 / 2;
 }

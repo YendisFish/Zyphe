@@ -19,6 +19,8 @@ public partial class Parser
                     );
                     
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
+
+                    declaration.Scope.parent = currentNode.Scope;
                     
                     currentNode.children.Add(declaration);
                     this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS
@@ -38,6 +40,8 @@ public partial class Parser
                     );
                     
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
+                    
+                    declaration.Scope.parent = currentNode.Scope;
                     
                     currentNode.children.Add(declaration);
                     this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS

@@ -1,6 +1,13 @@
 ﻿namespace Zyphe.Parser;
 
-public record Scope(Guid scopeId, Scope? parent, List<Scope> children)
+public record Scope(Guid scopeId, List<Scope> children)
 {
-    public Scope() : this(Guid.NewGuid(), null, new List<Scope>()) { }
+    public Scope? parent { get; set; }
+    public AstNode? returnNode { get; set; } = null;
+    public ParserState? returnState { get; set; } = null;
+
+    public Scope() : this(Guid.NewGuid(), new List<Scope>())
+    {
+        parent = null;
+    }
 }

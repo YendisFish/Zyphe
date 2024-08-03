@@ -2,8 +2,10 @@
 
 public partial class Parser
 {
-    public void ConsumeLetVariable()
+    public void ConsumeLetVariable(ParserState returnState)
     {
+        state = ParserState.VARIABLE;
+        
         string name = (string)tokens[index].value;
         TypeInfo? tInfo = null;
         Expression? expr = null;
@@ -22,6 +24,7 @@ public partial class Parser
             {
                 index = index + 1;
                 expr = this.ConsumeExpression();
+                index = index + 1;
                 break;
             }
 
@@ -40,9 +43,20 @@ public partial class Parser
         VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, null, null);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
+        declaration.Scope.parent = currentNode.Scope;
+        declaration.parent = currentNode;
+        
         declaredVariables.Add(name);
         currentNode.children.Add(declaration);
 
-        state = ParserState.FUNCTION;
+        state = returnState;
+    }
+
+    public void ConsumeRefVariable()
+    {
+        string name = (string)tokens[index].value;
+        TypeInfo? tInfo = null;
+        Expression? expr = null;
+        index = index + 1;
     }
 }

@@ -14,6 +14,7 @@ public class Lexer
             {
                 currentToken.type = Token.TokenType.VALUE;
                 currentToken.value = "";
+                currentToken.isString = true;
                 i = i + 1;
                 for (; file[i] != '\"'; i++)
                 {
@@ -30,6 +31,7 @@ public class Lexer
             {
                 currentToken.type = Token.TokenType.VALUE;
                 currentToken.value = new char();
+                currentToken.isChar = true;
                 i = i + 1;
                 for (; file[i] != '\''; i++)
                 {
@@ -68,9 +70,9 @@ public class Lexer
             if (Token.keywordMatches.TryGetValue(current, out keyword)/* && (!string.IsNullOrWhiteSpace("" + file[i + 1])) || !Token.tokenMatches.ContainsKey(file[i + 1])*/)
             {
                 //this prevents the lexer from attempting to parse doSomething (includes "do") into 2 tokens
-                if (i <= file.Length - 2)
+                if (i < file.Length - 1)
                 {
-                    if ((!string.IsNullOrWhiteSpace("" + file[i + 1])) || !Token.tokenMatches.ContainsKey(file[i + 1]))
+                    if (!(string.IsNullOrWhiteSpace("" + file[i + 1])) && !Token.tokenMatches.ContainsKey(file[i + 1]))
                     {
                         continue;
                     }
