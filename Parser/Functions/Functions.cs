@@ -2,7 +2,7 @@
 
 public partial class Parser
 {
-    public void ConsumeFunctionSignature(VariableIdentifier identifier, bool privateContext = false)
+    public void ConsumeFunctionSignature(VariableIdentifier identifier)
     {
         //making sure we are in the root scope
         if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
@@ -15,7 +15,7 @@ public partial class Parser
                     FunctionSignature signature = new FunctionSignature(
                         new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.LET, this.ConsumeType()),
                         (string)tokens[index].value,
-                        privateContext
+                        readingPrivateScope
                     );
                     
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
@@ -36,7 +36,7 @@ public partial class Parser
                     FunctionSignature signature = new FunctionSignature(
                         new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.REF, this.ConsumeType()),
                         (string)tokens[index].value,
-                        privateContext
+                        readingPrivateScope
                     );
                     
                     Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
@@ -54,6 +54,11 @@ public partial class Parser
         } else
         {
             throw new Exception("attempted to parse function outside of top level scope!");
+        }
+
+        if (readingPrivateScope)
+        {
+            readingPrivateScope = false;
         }
     }
 

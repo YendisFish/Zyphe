@@ -188,37 +188,40 @@ public partial class Parser
             }
             case Token.KeywordType.PRIVATE:
             {
-                #region Handle Functions
-
                 index = index + 1;
-                VariableIdentifier identifier = (tokens[index].keyword == Token.KeywordType.REF) ? VariableIdentifier.REF : VariableIdentifier.LET; 
-                if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
-                {
-                    this.ConsumeFunctionSignature(identifier, true);
-                }
+                readingPrivateScope = true;
                 
-                #endregion
-
                 break;
             }
             case Token.KeywordType.REF:
             {
-                #region Handle Functions
-                
-                if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
+                switch (state)
                 {
-                    this.ConsumeFunctionSignature(VariableIdentifier.REF);
+                    case ParserState.FUNCTION:
+                    case ParserState.IF:
+                    case ParserState.ELSE:
+                    case ParserState.WHILE:
+                    case ParserState.GETTER:
+                    case ParserState.SETTER:
+                    {
+                        index = index + 1;
+                        this.ConsumeRefVariable(state);
+                        break;
+                    }
+
+                    case ParserState.STRUCT:
+                    {
+                        index = index + 1;
+                        this.ConsumeProp(VariableIdentifier.REF);
+                        break;
+                    }
+
+                    case ParserState.GLOBAL:
+                    {
+                        this.ConsumeFunctionSignature(VariableIdentifier.REF);
+                        break;
+                    }
                 }
-                
-                #endregion
-                
-                #region Handle Variables 
-                
-                #endregion
-                
-                #region Handle Props
-                
-                #endregion
                 
                 break;
             }

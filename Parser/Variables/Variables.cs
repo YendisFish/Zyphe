@@ -17,7 +17,6 @@ public partial class Parser
             tInfo = this.ConsumeVarType();
         }
         
-        typeReturn:
         switch (tokens[index].type)
         {
             case Token.TokenType.EQUALS:
@@ -40,7 +39,7 @@ public partial class Parser
             // todo : type identification engine, little bit of semantics fr
         }
 
-        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo);
+        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, false, readingPrivateScope);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
         declaration.Scope = currentNode.Scope;
@@ -50,16 +49,63 @@ public partial class Parser
         currentNode.children.Add(declaration);
 
         state = returnState;
+        
+        if (readingPrivateScope)
+        {
+            readingPrivateScope = false;
+        }
     }
 
-    public void ConsumeRefVariable()
+    public void ConsumeRefVariable(ParserState returnState)
     {
         string name = (string)tokens[index].value;
         TypeInfo? tInfo = null;
         Expression? expr = null;
         index = index + 1;
         
-        // todo : actually handle this?????
+        if (tokens[index].type == Token.TokenType.COLON)
+        {
+            index = index + 1;
+            tInfo = this.ConsumeVarType();
+        }
+        
+        switch (tokens[index].type)
+        {
+            case Token.TokenType.EQUALS:
+            {
+                index = index + 1;
+                expr = this.ConsumeExpression();
+                index = index + 1;
+                break;
+            }
+
+            case Token.TokenType.SEMICOLON:
+            {
+                index = index + 1;
+                break;
+            }
+        }
+
+        if (tInfo is null)
+        {
+            // todo : type identification engine, little bit of semantics fr
+        }
+
+        VariableInfo info = new VariableInfo(VariableIdentifier.REF, name, tInfo, false, readingPrivateScope);
+        Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
+
+        declaration.Scope = currentNode.Scope;
+        declaration.parent = currentNode;
+        
+        declaredVariables.Add(name);
+        currentNode.children.Add(declaration);
+
+        state = returnState;
+        
+        if (readingPrivateScope)
+        {
+            readingPrivateScope = false;
+        }
     }
     
     public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS)

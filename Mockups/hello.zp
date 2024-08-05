@@ -1,9 +1,14 @@
-﻿void Main() {
-    let x: int = 4;
+﻿private void Main() {
+    let n: int = 5;
+    ref k: int = &n;
+}
+
+private ref int Test() {
+    let g = 5;
 }
 
 struct MyStruct {
-    let x: int { 
+    private let x: int { 
         get {
             let y = 3;
             

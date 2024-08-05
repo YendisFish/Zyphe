@@ -43,7 +43,7 @@ public partial class Parser
             case Token.TokenType.LBRACE:
             {
                 FunctionSignature signature = new FunctionSignature(new(decl.left.vType, decl.left.type),
-                    decl.left.name + "_getter");
+                    decl.left.name + "_getter", decl.left.isPrivate);
                 Declaration.FunctionDeclaration func = new Declaration.FunctionDeclaration(signature);
                 
                 decl.left.getter = func;
@@ -56,6 +56,11 @@ public partial class Parser
         }
         
         this.Next();
+        
+        if (readingPrivateScope)
+        {
+            readingPrivateScope = false;
+        }
     }
     
     public void ConsumeSetter()
@@ -78,7 +83,7 @@ public partial class Parser
             case Token.TokenType.LBRACE:
             {
                 FunctionSignature signature = new FunctionSignature(new(decl.left.vType, decl.left.type),
-                    decl.left.name + "_setter");
+                    decl.left.name + "_setter", decl.left.isPrivate);
                 Declaration.FunctionDeclaration func = new Declaration.FunctionDeclaration(signature);
                 
                 decl.left.setter = func;
