@@ -1,13 +1,16 @@
 ﻿namespace Zyphe.Parser;
 
 public record VariableInfo(
-    VariableIdentifier vType, 
-    string name, 
+    VariableIdentifier vType,
+    string name,
     TypeInfo type,
-    Declaration.FunctionDeclaration? getter, 
-    Declaration.FunctionDeclaration? setter,
-    bool isProp = false
-);
+    bool isProp = false,
+    bool isPrivate = false
+)
+{
+    public Declaration.FunctionDeclaration? getter { get; set; } = null;
+    public Declaration.FunctionDeclaration? setter { get; set; } = null;
+}
 
 public record TypeInfo(string name, List<Generic>? generics = null);
 

@@ -177,6 +177,8 @@ public partial class Parser
         return ret;
     }
 
-    public Expression ParseLiteralOrVarName() => (declaredVariables.Contains(tokens[index].value)) ? 
-        new Expression.VariableReference((string)tokens[index].value) : new Expression.Literal((string)tokens[index].value);
+    public Expression ParseLiteralOrVarName() => (declaredVariables.Contains(tokens[index].value)) || //check if a defined variable has the symbol name
+                                                  (state == ParserState.SETTER && (string)tokens[index].value == "value") //check if we are reading a setter value
+        ? new Expression.VariableReference((string)tokens[index].value)
+        : new Expression.Literal((string)tokens[index].value);
 }

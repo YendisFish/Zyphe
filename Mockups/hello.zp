@@ -1,3 +1,19 @@
 ﻿void Main() {
     let x: int = 4;
 }
+
+struct MyStruct {
+    let x: int { 
+        get {
+            let y = 3;
+            
+            if(y == 3) {
+                let z: int = 100;
+            }
+        }
+    
+        set {
+            let a = 44;
+        }
+    }
+}

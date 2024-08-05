@@ -40,10 +40,10 @@ public partial class Parser
             // todo : type identification engine, little bit of semantics fr
         }
 
-        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, null, null);
+        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
-        declaration.Scope.parent = currentNode.Scope;
+        declaration.Scope = currentNode.Scope;
         declaration.parent = currentNode;
         
         declaredVariables.Add(name);
@@ -58,9 +58,11 @@ public partial class Parser
         TypeInfo? tInfo = null;
         Expression? expr = null;
         index = index + 1;
+        
+        // todo : actually handle this?????
     }
     
-    public TypeInfo ConsumeVarType()
+    public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS)
     {
         string typeName = (string)tokens[index].value;
         
@@ -70,7 +72,7 @@ public partial class Parser
             index = index + 1; //take this out and have the generics leave you on the word token
         }
         
-        this.ReadToToken(Token.TokenType.EQUALS);
+        this.ReadToToken(readToOverride);
         
         return new TypeInfo(typeName);
     }

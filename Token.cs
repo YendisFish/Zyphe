@@ -62,7 +62,10 @@ public class Token
         USING,
         DELEGATE,
         ABSTRACT,
-        ELSE
+        ELSE,
+        GET,
+        SET,
+        ENUM
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -119,6 +122,8 @@ public class Token
         { "using", KeywordType.USING },
         { "delegate", KeywordType.DELEGATE },
         { "abstract", KeywordType.ABSTRACT },
-        { "else", KeywordType.ELSE }
+        { "else", KeywordType.ELSE },
+        { "get", KeywordType.GET },
+        { "set", KeywordType.SET }
     };
 }

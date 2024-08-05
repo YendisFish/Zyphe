@@ -9,6 +9,7 @@ public partial class Parser
     public ParserState state { get; set; } = ParserState.GLOBAL;
     public List<string> declaredVariables { get; set; } = new();
     public Statement.IfStatement? rootStatement { get; set; }
+    public bool readingPrivateScope { get; set; } = false;
 
     public Parser(Token[] toks)
     {
@@ -77,6 +78,30 @@ public partial class Parser
                             this.Next();
                             break;
                         }
+
+                        case ParserState.GETTER:
+                        {
+                            currentNode = currentNode.Scope.returnNode;
+                            state = ParserState.PROP;
+                            this.Next();
+                            
+                            break;
+                        }
+                            
+                        case ParserState.SETTER:
+                        {
+                            currentNode = currentNode.Scope.returnNode;
+                            state = ParserState.PROP;
+                            break;
+                        }
+                        
+                        case ParserState.PROP:
+                        {
+                            currentNode = currentNode.parent;
+                            state = ParserState.STRUCT;
+                            this.Next();
+                            break;
+                        }
                         
                         default:
                         {
@@ -108,6 +133,20 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.GET:
+            {
+                index = index + 1;
+                this.ConsumeGetter();
+                break;
+            }
+            
+            case Token.KeywordType.SET:
+            {
+                index = index + 1;
+                this.ConsumeSetter();
+                break;
+            }
+                
             case Token.KeywordType.WHILE:
             {
                 index = index + 2;
@@ -141,6 +180,9 @@ public partial class Parser
                 Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
 
                 currentNode.children.Add(structDecl);
+                currentNode = structDecl;
+
+                state = ParserState.STRUCT;
                 
                 break;
             }
@@ -170,6 +212,14 @@ public partial class Parser
                 
                 #endregion
                 
+                #region Handle Variables 
+                
+                #endregion
+                
+                #region Handle Props
+                
+                #endregion
+                
                 break;
             }
             case Token.KeywordType.LET:
@@ -179,10 +229,19 @@ public partial class Parser
                     case ParserState.FUNCTION:
                     case ParserState.IF:
                     case ParserState.ELSE:
-                    case ParserState.WHILE:    
+                    case ParserState.WHILE:
+                    case ParserState.GETTER:
+                    case ParserState.SETTER:
                     {
                         index = index + 1;
                         this.ConsumeLetVariable(state);
+                        break;
+                    }
+
+                    case ParserState.STRUCT:
+                    {
+                        index = index + 1;
+                        this.ConsumeProp(VariableIdentifier.LET);
                         break;
                     }
                 }
@@ -238,6 +297,9 @@ public enum ParserState
     FUNCTION,
     VARIABLE,
     STRUCT,
+    PROP,
+    GETTER,
+    SETTER,
     TYPECAST,
     IF,
     ELSE,
