@@ -35,7 +35,11 @@ public abstract record Declaration(Namespace? nspace) : AstNode
     public Declaration() : this(nspace: null) { }
 
     public record VariableDeclaration(VariableInfo left, Expression? initializer) : Declaration;
-    public record FunctionDeclaration(FunctionSignature signature) : Declaration;
+
+    public record FunctionDeclaration(FunctionSignature signature) : Declaration
+    {
+        public bool isStructFunc { get; set; } = false;
+    }
     public record StructDeclaration(StructInfo info) : Declaration;
 }
 

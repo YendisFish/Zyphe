@@ -36,6 +36,20 @@ public partial class Parser
                     switch (state)
                     {
                         case ParserState.FUNCTION:
+                        {
+                            if ((currentNode as Declaration.FunctionDeclaration).isStructFunc)
+                            {
+                                state = ParserState.STRUCT;
+                                currentNode = currentNode.parent;
+                                this.Next();
+                            } else {
+                                state = ParserState.GLOBAL;
+                                currentNode = ast.Root;
+                                this.Next();
+                            }
+                            
+                            break;
+                        }
                         case ParserState.STRUCT:
                         {
                             state = ParserState.GLOBAL;
@@ -92,12 +106,18 @@ public partial class Parser
                         {
                             currentNode = currentNode.Scope.returnNode;
                             state = ParserState.PROP;
+
+                            if (tokens[index + 1].type == Token.TokenType.RBRACE)
+                            {  
+                                this.Next();
+                            }
+                            
                             break;
                         }
                         
                         case ParserState.PROP:
                         {
-                            currentNode = currentNode.parent;
+                            currentNode = currentNode.Scope.returnNode;
                             state = ParserState.STRUCT;
                             this.Next();
                             break;
@@ -212,13 +232,42 @@ public partial class Parser
                     case ParserState.STRUCT:
                     {
                         index = index + 1;
-                        this.ConsumeProp(VariableIdentifier.REF);
+                        
+                        //identify var or func
+                        int currentIndex = index;
+                        bool isFunc = false;
+
+                        switch (tokens[index + 1].type)
+                        {
+                            case Token.TokenType.LALLIGATOR:
+                            {
+                                isFunc = true;
+                                break;
+                            }
+                            default:
+                            {
+                                if(tokens[index + 2].type == Token.TokenType.LALLIGATOR || tokens[index + 2].type == Token.TokenType.LPAREN)
+                                {
+                                    isFunc = true;
+                                }
+
+                                break;
+                            }
+                        }
+
+                        if (isFunc)
+                        {
+                            this.ConsumeFunctionSignature(VariableIdentifier.REF, true);
+                        } else {
+                            this.ConsumeProp(VariableIdentifier.REF);   
+                        }
+                        
                         break;
                     }
 
                     case ParserState.GLOBAL:
                     {
-                        this.ConsumeFunctionSignature(VariableIdentifier.REF);
+                        this.ConsumeFunctionSignature(VariableIdentifier.REF, false);
                         break;
                     }
                 }
@@ -254,7 +303,14 @@ public partial class Parser
             {
                 if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
                 {
-                    this.ConsumeFunctionSignature(VariableIdentifier.LET);
+                    this.ConsumeFunctionSignature(VariableIdentifier.LET, false);
+                }
+                
+                //identify a function in a struct and parse it 
+                if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
+                    tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
+                {
+                    this.ConsumeFunctionSignature(VariableIdentifier.LET, true);
                 }
                 
                 #region Consume Variable Expression

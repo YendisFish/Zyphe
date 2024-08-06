@@ -18,6 +18,7 @@ public partial class Parser
         VariableInfo vInf = new(identifier, name, tInf, true, readingPrivateScope);
         Declaration.VariableDeclaration decl = new(vInf, null); // this is a prop so it cannot have an initializer outside of the constructor
         decl.parent = currentNode;
+        decl.Scope.returnNode = currentNode;
         
         currentNode.children.Add(decl);
         currentNode = decl;

@@ -58,7 +58,7 @@ struct MyStruct {
     }
     
     //you can do conversions with the this keyword
-    string this {
+    this : string {
         get {
             return this.x;    
         }
@@ -146,15 +146,12 @@ try(let result: int = SendGetRequest("https://mysite.com/someinfo")) {
 
 ```cs
 struct SomeThing {
-    private ref ptr: char;
+    private ref ptr: char { get; set; }
 
-    char this[let index: int] {
-        get {
-            return ptr[index];
-        }
-
+    this : char [let index: int] {
+        get => ptr[index];
         set {
-            ptr[index] = value;
+            ptr = value;
         }
     }
 }
@@ -309,12 +306,8 @@ struct Node<T> {
 struct MyStruct {
     ref myStr: string = "Hello, World!";
     
-    void this +(let right: string) {
-        this.myStr = this.myStr + right;
-    }
-    
-    void this -(let right: string) {
-        this.myStr.Replace(right, "");
+    this : +(let right: string) {
+        myStr = myStr + right;
     }
 }
 ```
