@@ -6,7 +6,9 @@ public partial class Parser
     {
         state = ParserState.WHILE;
 
-        Expression condition = this.ConsumeExpression();
+        Expression? condition = null; 
+        this.ConsumeExpression2(ref condition);
+        
         Statement.WhileStatement statement = new Statement.WhileStatement((Expression.BooleanOperator)condition);
         statement.Scope.returnNode = currentNode;
         statement.Scope.returnState = returnState;

@@ -4,140 +4,160 @@ namespace Zyphe.Parser;
 
 public partial class Parser
 {
-    public Expression? ConsumeExpression(AstNode? parent = null)
+    public void ConsumeExpression2(ref Expression? expr)
     {
+        bool reading = true;
+        while (reading)
+        {
+            switch (tokens[index].type)
+            {
+                case Token.TokenType.WORD:
+                {
+                    if (declaredVariables.Contains((string)tokens[index].value) || 
+                        namespaces.Contains((string)tokens[index].value))
+                    {
+                        this.ParseVar(ref expr);
+                    } else {
+                        // we can just return a literal right?
+                        expr = new Expression.Literal((string)tokens[index].value);
+                        index = index + 1;
+                    }
+                
+                    break;
+                }
+
+                case Token.TokenType.PLUS:
+                case Token.TokenType.MINUS:
+                case Token.TokenType.FSLASH:
+                case Token.TokenType.STAR:
+                {
+                    Expression.BinaryOperator binOp = new Expression.BinaryOperator(expr, null, tokens[index].type);
+
+                    index = index + 1;
+                    
+                    Expression? r = null;
+                    this.ConsumeExpression2(ref r);
+                    binOp.right = r;
+                    
+                    expr = binOp;
+                    
+                    break;
+                }
+
+                case Token.TokenType.PIPE:
+                case Token.TokenType.NOT:
+                case Token.TokenType.EQUALS:
+                {
+                    string operation = ResolveBooleanOperator(new[] { tokens[index].type, tokens[index + 1].type });
+                    index = index + 2;
+                    
+                    Expression.BooleanOperator binOp = new Expression.BooleanOperator(expr, null, operation);
+                    
+                    Expression? r = null;
+                    this.ConsumeExpression2(ref r);
+                    binOp.right = r;
+                    
+                    expr = binOp;
+                    
+                    break;
+                }
+
+                case Token.TokenType.AMPERSAND:
+                {
+                    if (tokens[index + 1].type == Token.TokenType.AMPERSAND)
+                    {
+                        string operation = ResolveBooleanOperator(new[] { tokens[index].type, tokens[index + 1].type });
+                        index = index + 2;
+                    
+                        Expression.BooleanOperator binOp = new Expression.BooleanOperator(expr, null, operation);
+                    
+                        Expression? r = null;
+                        this.ConsumeExpression2(ref r);
+                        binOp.right = r;
+                    
+                        expr = binOp;
+                    } else {
+                        index = index + 1;
+
+                        Expression? r = null;
+                        this.ConsumeExpression2(ref r);
+                        
+                        Expression.ReferenceOperator rop = new Expression.ReferenceOperator(r);
+
+                        expr = rop;
+                    }
+                    
+                    break;
+                }
+
+                case Token.TokenType.LPAREN:
+                {
+                    //expr = new Expression.BinaryOperator(null, null, null);
+                    //Expression.BinaryOperator binOp = (Expression.BinaryOperator)expr;
+
+                    index = index + 1;
+                    this.ConsumeExpression2(ref expr);
+                    index = index + 1;
+                    
+                    //this.ConsumeExpression2(binOp.left);
+                    //this.ConsumeExpression2(binOp.right);
+                    break;
+                }
+
+                case Token.TokenType.RPAREN:
+                {
+                    reading = false;
+                    //index = index + 1;
+                    
+                    break;
+                }
+
+                case Token.TokenType.SEMICOLON:
+                case Token.TokenType.RBRACK:
+                {
+                    reading = false;
+                    //index = index + 1;
+                    break;
+                }
+            }   
+        }
+    }
+
+    public void ParseVar(ref Expression? expression)
+    {
+        string name = (string)tokens[index].value;
+        Expression? ind = null;
+
+        index = index + 1;
+
+        if (tokens[index].type == Token.TokenType.LBRACK)
+        {
+            index = index + 1;
+            this.ConsumeExpression2(ref ind); //take care of bracket exits here?
+            index = index + 1;
+        }
+
+        //take care of . to chain the expression!
+        Expression.VariableReference rf = new Expression.VariableReference(name, null, null, null);
+        rf = rf with { index = ind };
+        
         switch (tokens[index].type)
         {
-            case Token.TokenType.AMPERSAND:
+            case Token.TokenType.DOT:
             {
                 index = index + 1;
-                Expression.ReferenceOperator rOp = new Expression.ReferenceOperator(this.ConsumeExpression());
-                rOp.parent = parent;
-                rOp.children.Add(rOp.expr);
-                rOp.expr.parent = rOp;
-                return rOp;
-            }
                 
-            case Token.TokenType.WORD:
-            {
-                switch (tokens[index + 1].type)
-                {
-                    //if the next token is a semicolon just parse the literal and return
-                    case Token.TokenType.SEMICOLON:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        literal.parent = parent;
-                        this.ReadToToken(Token.TokenType.SEMICOLON);
-                        return literal;
-                    }
-
-                    //if the next token is a right parenthesis then parse a literal, escape the parentheses and return
-                    case Token.TokenType.RPAREN:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        literal.parent = parent;
-                        index = index + 2;
-                        return literal;
-                    }
-
-                    //if the next token is a mathematical operator, parse a literal on the left, use recursive parsing on the right
-                    case Token.TokenType.PLUS: 
-                    case Token.TokenType.MINUS: 
-                    case Token.TokenType.STAR: 
-                    case Token.TokenType.FSLASH:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        Token.TokenType operation = tokens[index + 1].type;
-                        index = index + 2;
-                        Expression.BinaryOperator expr = new Expression.BinaryOperator(literal, this.ConsumeExpression(), operation);
-                        expr.parent = parent;
-                        
-                        literal.parent = expr;
-                        expr.right.parent = expr;
-                        
-                        expr.children.Add(literal);
-                        expr.children.Add(expr.right);
-                        
-                        return expr;
-                    }
-
-                    case Token.TokenType.AMPERSAND:
-                    case Token.TokenType.PIPE:
-                    case Token.TokenType.EQUALS:
-                    case Token.TokenType.NOT:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        string operation = ResolveBooleanOperator(new[] { tokens[index + 1].type, tokens[index + 2].type });
-                        index = index + 3;
-                        Expression.BooleanOperator expr = new Expression.BooleanOperator(literal, this.ConsumeExpression(), operation);
-                        
-                        expr.parent = parent;
-                        
-                        literal.parent = expr;
-                        expr.right.parent = expr;
-                        
-                        expr.children.Add(literal);
-                        expr.children.Add(expr.right);
-                        
-                        return expr;
-                    }
-                }
+                Expression? r = null;
+                this.ParseVar(ref r);
+                
+                rf = rf with { chain = r };
+                r = (r as Expression.VariableReference) with { chainParent = rf };
                 
                 break;
             }
-
-            //if there is a left parenthesis, parse a literal, move to the side, and recursively parse
-            case Token.TokenType.LPAREN:
-            {
-                index = index + 1;
-
-                switch (tokens[index + 1].type)
-                {
-                    case Token.TokenType.AMPERSAND:
-                    case Token.TokenType.PIPE:
-                    case Token.TokenType.EQUALS:
-                    case Token.TokenType.NOT:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        string operation = ResolveBooleanOperator(new[] { tokens[index + 1].type, tokens[index + 2].type });
-                        index = index + 3;
-                        Expression.BooleanOperator expr = new Expression.BooleanOperator(literal, this.ConsumeExpression(), operation);
-                        
-                        expr.parent = parent;
-                        
-                        literal.parent = expr;
-                        expr.right.parent = expr;
-                        
-                        expr.children.Add(literal);
-                        expr.children.Add(expr.right);
-                        
-                        return expr;
-                    }
-
-                    default:
-                    {
-                        Expression literal = ParseLiteralOrVarName();
-                        Token.TokenType operation = tokens[index + 1].type;
-
-                        index = index + 2;
-                
-                        Expression.BinaryOperator expr = new Expression.BinaryOperator(literal, this.ConsumeExpression(), operation);
-                        
-                        expr.parent = parent;
-                        
-                        literal.parent = expr;
-                        expr.right.parent = expr;
-                        
-                        expr.children.Add(literal);
-                        expr.children.Add(expr.right);
-                        
-                        return expr;
-                    }
-                }
-            }
         }
-
-        return null;
+        
+        expression = rf;
     }
 
     public string ResolveBooleanOperator(Token.TokenType[] tps)
@@ -176,9 +196,4 @@ public partial class Parser
 
         return ret;
     }
-
-    public Expression ParseLiteralOrVarName() => (declaredVariables.Contains(tokens[index].value)) || //check if a defined variable has the symbol name
-                                                  (state == ParserState.SETTER && (string)tokens[index].value == "value") //check if we are reading a setter value
-        ? new Expression.VariableReference((string)tokens[index].value)
-        : new Expression.Literal((string)tokens[index].value);
 }

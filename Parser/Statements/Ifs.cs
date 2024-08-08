@@ -6,7 +6,9 @@ public partial class Parser
     {
         state = ParserState.IF;
         
-        Expression condition = this.ConsumeExpression() ?? throw new NullReferenceException();
+        Expression? condition = null;
+        this.ConsumeExpression2(ref condition);
+        
         Statement.IfStatement statement = new Statement.IfStatement(condition);
         statement.isRoot = isRoot;
         statement.Scope.returnState = rState; //(currentNode is Statement.ElseStatement) ? ParserState.ELSE : ParserState.IF;

@@ -22,7 +22,7 @@ public partial class Parser
             case Token.TokenType.EQUALS:
             {
                 index = index + 1;
-                expr = this.ConsumeExpression();
+                this.ConsumeExpression2(ref expr);
                 index = index + 1;
                 break;
             }
@@ -74,7 +74,7 @@ public partial class Parser
             case Token.TokenType.EQUALS:
             {
                 index = index + 1;
-                expr = this.ConsumeExpression();
+                this.ConsumeExpression2(ref expr);
                 index = index + 1;
                 break;
             }

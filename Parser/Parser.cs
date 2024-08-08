@@ -8,6 +8,7 @@ public partial class Parser
     public AstNode currentNode { get; set; }
     public ParserState state { get; set; } = ParserState.GLOBAL;
     public List<string> declaredVariables { get; set; } = new();
+    public List<string> namespaces { get; set; } = new();
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
 

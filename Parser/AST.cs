@@ -20,13 +20,41 @@ public record AstNode
 
 public record Expression() : AstNode
 {
-    public record BinaryOperator(Expression left, Expression right, Token.TokenType operation) : Expression;
+    public record BinaryOperator : Expression
+    {
+        public Expression? left { get; set; }
+        public Expression? right { get; set; }
+        public Token.TokenType type { get; set; }
+
+        public BinaryOperator(Expression? l, Expression? r, Token.TokenType t)
+        {
+            left = l;
+            right = r;
+            type = t;
+        }
+    }
     public record UnaryOperator(Expression expr) : Expression;
     public record VariableAssignment(string name, Expression right) : Expression;
-    public record VariableReference(string name) : Expression;
+
+    public record VariableReference(string name, Expression? index, Expression? chain, Expression? chainParent)
+        : Expression;
     public record FunctionReference(string name) : Expression;
     public record Literal(string word) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
-    public record BooleanOperator(Expression left, Expression right, string operation) : Expression;
+
+    public record BooleanOperator : Expression
+    {
+        public Expression? left { get; set; }
+        public Expression? right { get; set; }
+        public string type { get; set; }
+
+        public BooleanOperator(Expression? l, Expression? r, string t)
+        {
+            left = l;
+            right = r;
+            type = t;
+        }
+    }
+    
     public record ReferenceOperator(Expression expr) : Expression;
 }
 

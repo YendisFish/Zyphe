@@ -1,6 +1,3 @@
-﻿struct MyStruct {
-    this : string {
-        get;
-        set;
-    }
+﻿void Main() {
+    let z = true && false;
 }
