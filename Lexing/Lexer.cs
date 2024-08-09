@@ -12,7 +12,7 @@ public class Lexer
         {
             if (file[i] == '\"')
             {
-                currentToken.type = Token.TokenType.VALUE;
+                currentToken.type = Token.TokenType.WORD;
                 currentToken.value = "";
                 currentToken.isString = true;
                 i = i + 1;
@@ -29,7 +29,7 @@ public class Lexer
             
             if (file[i] == '\'')
             {
-                currentToken.type = Token.TokenType.VALUE;
+                currentToken.type = Token.TokenType.WORD;
                 currentToken.value = new char();
                 currentToken.isChar = true;
                 i = i + 1;

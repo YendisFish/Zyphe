@@ -1,3 +1,3 @@
 ﻿void Main() {
-    let z = true && false;
+    let y: string = "Hello, World!";
 }

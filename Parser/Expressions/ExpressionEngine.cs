@@ -19,8 +19,13 @@ public partial class Parser
                         this.ParseVar(ref expr);
                     } else {
                         // we can just return a literal right?
-                        expr = new Expression.Literal((string)tokens[index].value);
-                        index = index + 1;
+                        if (tokens[index].keyword == Token.KeywordType.NEW)
+                        {
+                            this.ParseNew(ref expr);
+                        } else {
+                            expr = new Expression.Literal((string)tokens[index].value);
+                            index = index + 1;
+                        }
                     }
                 
                     break;
@@ -121,6 +126,13 @@ public partial class Parser
                 }
             }   
         }
+    }
+
+    public void ParseNew(ref Expression? expr)
+    {
+        index = index + 1;
+        expr = new Expression.NewOperator((string)tokens[index].value, null, null);
+        //todo: implement function parsing instead of static parsing for constructors
     }
 
     public void ParseVar(ref Expression? expression)

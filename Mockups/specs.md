@@ -8,6 +8,8 @@ const y = new MyStruct(); // immutable variable
 ```cs
 let x = 5;
 
+ref initializer = new MyStruct(); //automatic heap allocation
+
 ref someRef = &x; //automatically makes reference since its a reference type
 ref someOtherRef = &someRef; //error, only shallow references are allowed
 ref anotherRef = someRef; // copies over reference
@@ -310,4 +312,26 @@ struct MyStruct {
         myStr = myStr + right;
     }
 }
+```
+
+# Params Keyword
+This is a value type, you cannot pass references
+
+```csharp
+void MyFunc(params p: string) {
+    for(let i = 0; i < p.Length; i = i + 1) {
+        //process p[i]
+        let x = p[i];
+    }
+}
+
+extern void ExternalFunc(params p: _);
+extern void printf(ref str: char, params delim: _);
+
+/*
+    Sometimes external functions dont take a type so
+    Zyphe allows you to put "_" as a type for parameters and
+    the compiler will generate multiple function signatures
+    with whatever types you end up using!
+*/
 ```

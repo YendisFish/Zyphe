@@ -35,10 +35,19 @@ public record Expression() : AstNode
     }
     public record UnaryOperator(Expression expr) : Expression;
     public record VariableAssignment(string name, Expression right) : Expression;
-
+    public record NewOperator(
+        string name, 
+        List<GenericUsage>? generics = null, 
+        List<Expression>? arguments = null) : Expression;
     public record VariableReference(string name, Expression? index, Expression? chain, Expression? chainParent)
         : Expression;
-    public record FunctionReference(string name) : Expression;
+    public record FunctionReference(
+        string name, 
+        Expression? index, 
+        Expression? chain, 
+        Expression? chainParent,
+        List<GenericUsage>? generics = null,
+        List<Expression>? arguments = null) : Expression;
     public record Literal(string word) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
 
     public record BooleanOperator : Expression
