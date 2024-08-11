@@ -1,3 +1,7 @@
 ﻿void Main() {
-    let y: string = "Hello, World!";
+    let y: MyStruct = new MyStruct<int, string, List<int>>();
+}
+
+struct MyStruct {
+    let x: int { get; set; }
 }

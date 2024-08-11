@@ -210,7 +210,7 @@ struct B {
 }
 
 // specify that T can be of type A or B
-struct MyStruct<T : A, B> {
+struct MyStruct<T : A | B, T1 : A> {
     ref variable: T;
 }
 ```
