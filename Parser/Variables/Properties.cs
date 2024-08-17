@@ -44,7 +44,7 @@ public partial class Parser
             case Token.TokenType.LBRACE:
             {
                 FunctionSignature signature = new FunctionSignature(new(decl.left.vType, decl.left.type),
-                    decl.left.name + "_getter", decl.left.isPrivate);
+                    decl.left.name + "_getter", decl.left.isPrivate, new());
                 Declaration.FunctionDeclaration func = new Declaration.FunctionDeclaration(signature);
                 
                 decl.left.getter = func;
@@ -84,7 +84,7 @@ public partial class Parser
             case Token.TokenType.LBRACE:
             {
                 FunctionSignature signature = new FunctionSignature(new(decl.left.vType, decl.left.type),
-                    decl.left.name + "_setter", decl.left.isPrivate);
+                    decl.left.name + "_setter", decl.left.isPrivate, new()); //todo : Implement function arguments to cover setter inputs!
                 Declaration.FunctionDeclaration func = new Declaration.FunctionDeclaration(signature);
                 
                 decl.left.setter = func;

@@ -27,117 +27,123 @@ public partial class Parser
             switch (tokens[index].type)
             {
                 case Token.TokenType.WORD:
-                {
-                    this.ConsumeWord();
-                    break;
-                }
+                    {
+                        this.ConsumeWord();
+                        break;
+                    }
 
                 case Token.TokenType.RBRACE:
-                {
-                    switch (state)
                     {
-                        case ParserState.FUNCTION:
+                        switch (state)
                         {
-                            if ((currentNode as Declaration.FunctionDeclaration).isStructFunc)
-                            {
-                                state = ParserState.STRUCT;
-                                currentNode = currentNode.parent;
-                                this.Next();
-                            } else {
-                                state = ParserState.GLOBAL;
-                                currentNode = ast.Root;
-                                this.Next();
-                            }
-                            
-                            break;
-                        }
-                        case ParserState.STRUCT:
-                        {
-                            state = ParserState.GLOBAL;
-                            currentNode = ast.Root;
-                            this.Next();
-                            break;
-                        }
+                            case ParserState.FUNCTION:
+                                {
+                                    if ((currentNode as Declaration.FunctionDeclaration).isStructFunc)
+                                    {
+                                        state = ParserState.STRUCT;
+                                        currentNode = currentNode.parent;
+                                        this.Next();
+                                    }
+                                    else
+                                    {
+                                        state = ParserState.GLOBAL;
+                                        currentNode = ast.Root;
+                                        this.Next();
+                                    }
 
-                        case ParserState.IF:
-                        {
-                            
-                            if (!(index + 1 >= tokens.Length) && tokens[index + 1].keyword == Token.KeywordType.ELSE)
-                            {
-                                this.Next();
-                            } else {
-                                if (currentNode is Statement.IfStatement a &&
-                                    a.Scope.returnNode is Statement.ElseStatement b &&
-                                    b.isIfElse)
+                                    break;
+                                }
+                            case ParserState.STRUCT:
                                 {
-                                    currentNode = b.Scope.returnNode;
-                                    //this.Next();
-                                } else if (currentNode is Statement.ElseStatement)
+                                    state = ParserState.GLOBAL;
+                                    currentNode = ast.Root;
+                                    this.Next();
+                                    break;
+                                }
+
+                            case ParserState.IF:
                                 {
-                                    currentNode = currentNode.Scope.returnNode;
-                                    //this.Next();
-                                } else
+
+                                    if (!(index + 1 >= tokens.Length) && tokens[index + 1].keyword == Token.KeywordType.ELSE)
+                                    {
+                                        this.Next();
+                                    }
+                                    else
+                                    {
+                                        if (currentNode is Statement.IfStatement a &&
+                                            a.Scope.returnNode is Statement.ElseStatement b &&
+                                            b.isIfElse)
+                                        {
+                                            currentNode = b.Scope.returnNode;
+                                            //this.Next();
+                                        }
+                                        else if (currentNode is Statement.ElseStatement)
+                                        {
+                                            currentNode = currentNode.Scope.returnNode;
+                                            //this.Next();
+                                        }
+                                        else
+                                        {
+                                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                                            currentNode = currentNode.Scope.returnNode;
+                                            this.Next();
+                                        }
+                                    }
+
+                                    break;
+                                }
+
+                            case ParserState.WHILE:
                                 {
-                                    state = currentNode.Scope.returnState ?? throw new NullReferenceException();
                                     currentNode = currentNode.Scope.returnNode;
                                     this.Next();
+                                    break;
                                 }
-                            }
-                            
-                            break;
+
+                            case ParserState.GETTER:
+                                {
+                                    currentNode = currentNode.Scope.returnNode;
+                                    state = ParserState.PROP;
+                                    this.Next();
+
+                                    break;
+                                }
+
+                            case ParserState.SETTER:
+                                {
+                                    currentNode = currentNode.Scope.returnNode;
+                                    state = ParserState.PROP;
+
+                                    if (tokens[index + 1].type == Token.TokenType.RBRACE)
+                                    {
+                                        this.Next();
+                                    }
+
+                                    break;
+                                }
+
+                            case ParserState.PROP:
+                                {
+                                    currentNode = currentNode.Scope.returnNode;
+                                    state = ParserState.STRUCT;
+                                    this.Next();
+                                    break;
+                                }
+
+                            default:
+                                {
+                                    this.Next();
+                                    break;
+                                }
                         }
 
-                        case ParserState.WHILE:
-                        {
-                            currentNode = currentNode.Scope.returnNode;
-                            this.Next();
-                            break;
-                        }
-
-                        case ParserState.GETTER:
-                        {
-                            currentNode = currentNode.Scope.returnNode;
-                            state = ParserState.PROP;
-                            this.Next();
-                            
-                            break;
-                        }
-                            
-                        case ParserState.SETTER:
-                        {
-                            currentNode = currentNode.Scope.returnNode;
-                            state = ParserState.PROP;
-
-                            if (tokens[index + 1].type == Token.TokenType.RBRACE)
-                            {  
-                                this.Next();
-                            }
-                            
-                            break;
-                        }
-                        
-                        case ParserState.PROP:
-                        {
-                            currentNode = currentNode.Scope.returnNode;
-                            state = ParserState.STRUCT;
-                            this.Next();
-                            break;
-                        }
-                        
-                        default:
-                        {
-                            this.Next();
-                            break;
-                        }
+                        break;
                     }
-                    
-                    break;
-                }
                 default:
-                {
-                    this.Next();
-                    break;
-                }
+                    {
+                        this.Next();
+                        break;
+                    }
             }
         }
     }
@@ -155,196 +161,198 @@ public partial class Parser
         switch (tokens[index].keyword)
         {
             case Token.KeywordType.GET:
-            {
-                index = index + 1;
-                this.ConsumeGetter();
-                break;
-            }
-            
-            case Token.KeywordType.SET:
-            {
-                index = index + 1;
-                this.ConsumeSetter();
-                break;
-            }
-                
-            case Token.KeywordType.WHILE:
-            {
-                index = index + 2;
-                this.ConsumeWhileLoop(state);
-                break;
-            }
-                
-            case Token.KeywordType.ELSE:
-            {
-                this.Next();
-                this.ConsumeElse();
-                break;
-            }
-                
-            case Token.KeywordType.IF:
-            {
-                index = index + 2;
-
-                bool isRoot = (state == ParserState.FUNCTION);
-                this.ConsumeIfStatement(isRoot, state);
-                
-                break;
-            }
-            
-            case Token.KeywordType.STRUCT:
-            {
-                index = index + 1;
-                string name = (string)tokens[index].value;
-
-                StructInfo sInfo = new StructInfo(name, this.ConsumeGenerics(), null);
-                Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
-
-                currentNode.children.Add(structDecl);
-                currentNode = structDecl;
-
-                state = ParserState.STRUCT;
-                
-                break;
-            }
-            case Token.KeywordType.PRIVATE:
-            {
-                index = index + 1;
-                readingPrivateScope = true;
-                
-                break;
-            }
-            case Token.KeywordType.REF:
-            {
-                switch (state)
                 {
-                    case ParserState.FUNCTION:
-                    case ParserState.IF:
-                    case ParserState.ELSE:
-                    case ParserState.WHILE:
-                    case ParserState.GETTER:
-                    case ParserState.SETTER:
-                    {
-                        index = index + 1;
-                        this.ConsumeRefVariable(state);
-                        break;
-                    }
+                    index = index + 1;
+                    this.ConsumeGetter();
+                    break;
+                }
 
-                    case ParserState.STRUCT:
-                    {
-                        index = index + 1;
-                        
-                        //identify var or func
-                        int currentIndex = index;
-                        bool isFunc = false;
+            case Token.KeywordType.SET:
+                {
+                    index = index + 1;
+                    this.ConsumeSetter();
+                    break;
+                }
 
-                        switch (tokens[index + 1].type)
-                        {
-                            case Token.TokenType.LALLIGATOR:
+            case Token.KeywordType.WHILE:
+                {
+                    index = index + 2;
+                    this.ConsumeWhileLoop(state);
+                    break;
+                }
+
+            case Token.KeywordType.ELSE:
+                {
+                    this.Next();
+                    this.ConsumeElse();
+                    break;
+                }
+
+            case Token.KeywordType.IF:
+                {
+                    index = index + 2;
+
+                    bool isRoot = (state == ParserState.FUNCTION);
+                    this.ConsumeIfStatement(isRoot, state);
+
+                    break;
+                }
+
+            case Token.KeywordType.STRUCT:
+                {
+                    index = index + 1;
+                    string name = (string)tokens[index].value;
+
+                    StructInfo sInfo = new StructInfo(name, this.ConsumeGenerics(), null);
+                    Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
+
+                    currentNode.children.Add(structDecl);
+                    currentNode = structDecl;
+
+                    state = ParserState.STRUCT;
+
+                    break;
+                }
+            case Token.KeywordType.PRIVATE:
+                {
+                    index = index + 1;
+                    readingPrivateScope = true;
+
+                    break;
+                }
+            case Token.KeywordType.REF:
+                {
+                    switch (state)
+                    {
+                        case ParserState.FUNCTION:
+                        case ParserState.IF:
+                        case ParserState.ELSE:
+                        case ParserState.WHILE:
+                        case ParserState.GETTER:
+                        case ParserState.SETTER:
                             {
-                                isFunc = true;
+                                index = index + 1;
+                                this.ConsumeRefVariable(state);
                                 break;
                             }
-                            default:
+
+                        case ParserState.STRUCT:
                             {
-                                if(tokens[index + 2].type == Token.TokenType.LALLIGATOR || tokens[index + 2].type == Token.TokenType.LPAREN)
+                                index = index + 1;
+
+                                //identify var or func
+                                int currentIndex = index;
+                                bool isFunc = false;
+
+                                switch (tokens[index + 1].type)
                                 {
-                                    isFunc = true;
+                                    case Token.TokenType.LALLIGATOR:
+                                        {
+                                            isFunc = true;
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            if (tokens[index + 2].type == Token.TokenType.LALLIGATOR || tokens[index + 2].type == Token.TokenType.LPAREN)
+                                            {
+                                                isFunc = true;
+                                            }
+
+                                            break;
+                                        }
+                                }
+
+                                if (isFunc)
+                                {
+                                    this.ConsumeFunctionSignature(VariableIdentifier.REF, true);
+                                }
+                                else
+                                {
+                                    this.ConsumeProp(VariableIdentifier.REF);
                                 }
 
                                 break;
                             }
-                        }
 
-                        if (isFunc)
-                        {
-                            this.ConsumeFunctionSignature(VariableIdentifier.REF, true);
-                        } else {
-                            this.ConsumeProp(VariableIdentifier.REF);   
-                        }
-                        
-                        break;
+                        case ParserState.GLOBAL:
+                            {
+                                this.ConsumeFunctionSignature(VariableIdentifier.REF, false);
+                                break;
+                            }
                     }
 
-                    case ParserState.GLOBAL:
-                    {
-                        this.ConsumeFunctionSignature(VariableIdentifier.REF, false);
-                        break;
-                    }
+                    break;
                 }
-                
-                break;
-            }
             case Token.KeywordType.LET:
-            {
-                switch (state)
                 {
-                    case ParserState.FUNCTION:
-                    case ParserState.IF:
-                    case ParserState.ELSE:
-                    case ParserState.WHILE:
-                    case ParserState.GETTER:
-                    case ParserState.SETTER:
+                    switch (state)
                     {
-                        index = index + 1;
-                        this.ConsumeLetVariable(state);
-                        break;
+                        case ParserState.FUNCTION:
+                        case ParserState.IF:
+                        case ParserState.ELSE:
+                        case ParserState.WHILE:
+                        case ParserState.GETTER:
+                        case ParserState.SETTER:
+                            {
+                                index = index + 1;
+                                this.ConsumeLetVariable(state);
+                                break;
+                            }
+
+                        case ParserState.STRUCT:
+                            {
+                                index = index + 1;
+                                this.ConsumeProp(VariableIdentifier.LET);
+                                break;
+                            }
+                    }
+                    break;
+                }
+            default:
+                {
+                    if (ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
+                    {
+                        this.ConsumeFunctionSignature(VariableIdentifier.LET, false);
                     }
 
-                    case ParserState.STRUCT:
+                    //identify a function in a struct and parse it 
+                    if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
+                        tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
                     {
-                        index = index + 1;
-                        this.ConsumeProp(VariableIdentifier.LET);
-                        break;
+                        this.ConsumeFunctionSignature(VariableIdentifier.LET, true);
                     }
+
+                    #region Consume Variable Expression
+
+                    // todo: implement variable expressions
+
+                    #endregion
+
+                    break;
                 }
-                break;
-            }
-            default:
-            {
-                if(ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
-                {
-                    this.ConsumeFunctionSignature(VariableIdentifier.LET, false);
-                }
-                
-                //identify a function in a struct and parse it 
-                if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
-                    tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
-                {
-                    this.ConsumeFunctionSignature(VariableIdentifier.LET, true);
-                }
-                
-                #region Consume Variable Expression
-                
-                // todo: implement variable expressions
-                
-                #endregion
-                
-                break;
-            }
         }
     }
-    
+
     public void ReadToToken(Token.TokenType tokenType)
     {
         if (tokens[index].type == tokenType)
         {
             index = index + 1;
         }
-        
+
         while (tokens[index].type != tokenType)
         {
             index = index + 1;
         }
     }
-    
+
     public void ReadToWord(Token.KeywordType keyword)
     {
         if (tokens[index].keyword == keyword)
         {
             index = index + 1;
         }
-        
+
         while (tokens[index].keyword != keyword)
         {
             index = index + 1;

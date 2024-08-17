@@ -4,7 +4,7 @@ public class AST
 {
     public AstNode Root { get; set; } = new AstNode();
 }
-
+    
 public record AstNode
 {
     public AstNode? parent { get; set; }

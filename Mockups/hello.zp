@@ -1,7 +1,3 @@
-﻿void Main() {
-    let y: MyStruct = new MyStruct<int, string, List<int>>();
-}
-
-struct MyStruct {
-    let x: int { get; set; }
+﻿string Add(let int1: int, let int2: int) {
+    let y = 3;
 }
