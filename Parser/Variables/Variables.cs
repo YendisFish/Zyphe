@@ -34,11 +34,6 @@ public partial class Parser
             }
         }
 
-        if (tInfo is null)
-        {
-            // todo : type identification engine, little bit of semantics fr
-        }
-
         VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, false, readingPrivateScope);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
@@ -86,11 +81,6 @@ public partial class Parser
             }
         }
 
-        if (tInfo is null)
-        {
-            // todo : type identification engine, little bit of semantics fr
-        }
-
         VariableInfo info = new VariableInfo(VariableIdentifier.REF, name, tInfo, false, readingPrivateScope);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
@@ -111,15 +101,17 @@ public partial class Parser
     public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS)
     {
         string typeName = (string)tokens[index].value;
+        List<GenericUsage> usages = null;
+        
+        index = index + 1;
         
         if (tokens[index].type == Token.TokenType.LALLIGATOR)
         {
-            // todo: implement generic parsing
-            index = index + 1; //take this out and have the generics leave you on the word token
+            usages = this.ConsumeGenericUsages() ?? throw new NullReferenceException();
         }
         
         this.ReadToToken(readToOverride);
         
-        return new TypeInfo(typeName);
+        return new TypeInfo(typeName, usages);
     }
 }

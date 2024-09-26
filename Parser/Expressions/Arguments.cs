@@ -19,7 +19,7 @@ public partial class Parser
                     Expression? expr = null;
                     this.ConsumeExpression2(ref expr);
 
-                    ret.Add(expr);
+                    ret.Add(expr ?? throw new NullReferenceException());
 
                     break;
                 }
@@ -33,7 +33,7 @@ public partial class Parser
                     Expression? expr = null;
                     this.ConsumeExpression2(ref expr);
                     
-                    ret.Add(expr);
+                    ret.Add(expr ?? throw new NullReferenceException());
 
                     break;
                 }

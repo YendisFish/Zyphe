@@ -1,5 +1,7 @@
 ﻿string Add(let int1: int, let int2: int) {
-    let y = new Thingy(int1, int2);
+    let b: Thingy<Thingy<Thingy>> = 1 == 1;
 }
 
-struct Thingy {}
+struct Thingy {
+    let x: Thingy<Thingy> { get; set; }
+}

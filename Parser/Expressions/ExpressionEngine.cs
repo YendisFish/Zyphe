@@ -138,14 +138,12 @@ public partial class Parser
     public void ParseNew(ref Expression? expr)
     {
         index = index + 1;
-        string name = (string)tokens[index].value;
+        string name = (string)tokens[index].value!;
 
         index = index + 1;
         List<GenericUsage>? generics = this.ConsumeGenericUsages();
         
         expr = new Expression.NewOperator(name, generics, null);
-        
-        //todo: IMPLEMENT ARGUMENT PARSING OMGGG!!!!!!!!
 
         List<Expression> args = this.ReadPassedArguments();
         expr = (expr as Expression.NewOperator ?? throw new NullReferenceException()) with { arguments = args };

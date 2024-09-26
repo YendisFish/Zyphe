@@ -44,7 +44,6 @@ public partial class Parser
 
                 case Token.TokenType.RALLIGATOR:
                 {
-                    index = index + 1;
                     return ret;
                 }
 

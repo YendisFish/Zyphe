@@ -8,8 +8,8 @@ public partial class Parser
         
         //consume variable name
         string name = (string)tokens[index].value ?? throw new NullReferenceException();
-        
-        this.Next();
+
+        index = index + 2;
         
         //consume var type
         TypeInfo tInf = this.ConsumeVarType(Token.TokenType.LBRACE); //idk if the pipe works here?
