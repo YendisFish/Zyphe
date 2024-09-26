@@ -1,3 +1,5 @@
 ﻿string Add(let int1: int, let int2: int) {
-    let y = 3;
+    let y = new Thingy(int1, int2);
 }
+
+struct Thingy {}

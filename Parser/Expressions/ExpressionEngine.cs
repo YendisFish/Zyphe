@@ -32,6 +32,12 @@ public partial class Parser
                     break;
                 }
 
+                case Token.TokenType.COMMA:
+                {
+                    reading = false;
+                    break;
+                }
+
                 case Token.TokenType.PLUS:
                 case Token.TokenType.MINUS:
                 case Token.TokenType.FSLASH:
@@ -140,8 +146,11 @@ public partial class Parser
         expr = new Expression.NewOperator(name, generics, null);
         
         //todo: IMPLEMENT ARGUMENT PARSING OMGGG!!!!!!!!
+
+        List<Expression> args = this.ReadPassedArguments();
+        expr = (expr as Expression.NewOperator ?? throw new NullReferenceException()) with { arguments = args };
         
-        this.ReadToToken(Token.TokenType.RPAREN);
+        //this.ReadToToken(Token.TokenType.RPAREN); //REMOVE THIS?
     }
 
     public void ParseVar(ref Expression? expression)
