@@ -200,16 +200,7 @@ public partial class Parser
 
             case Token.KeywordType.STRUCT:
             {
-                index = index + 1;
-                string name = (string)tokens[index].value;
-
-                StructInfo sInfo = new StructInfo(name, this.ConsumeGenerics(), null);
-                Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
-
-                currentNode.children.Add(structDecl);
-                currentNode = structDecl;
-
-                state = ParserState.STRUCT;
+                this.ConsumeStruct();
 
                 break;
             }

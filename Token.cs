@@ -65,7 +65,8 @@ public class Token
         ELSE,
         GET,
         SET,
-        ENUM
+        ENUM,
+        WHERE
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -124,6 +125,7 @@ public class Token
         { "abstract", KeywordType.ABSTRACT },
         { "else", KeywordType.ELSE },
         { "get", KeywordType.GET },
-        { "set", KeywordType.SET }
+        { "set", KeywordType.SET },
+        { "where", KeywordType.WHERE }
     };
 }

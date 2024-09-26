@@ -2,6 +2,6 @@
     let b: Thingy<Thingy<Thingy>> = 1 == 1;
 }
 
-struct Thingy {
+struct Thingy<T where Thingy : A where Thingy, B> {
     let x: Thingy<Thingy> { get; set; }
 }
