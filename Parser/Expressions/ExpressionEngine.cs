@@ -14,7 +14,8 @@ public partial class Parser
                 case Token.TokenType.WORD:
                 {
                     if (declaredVariables.Contains((string)tokens[index].value) || 
-                        namespaces.Contains((string)tokens[index].value))
+                        namespaces.Contains((string)tokens[index].value) || 
+                        tokens[index + 1].type == Token.TokenType.LALLIGATOR || tokens[index + 1].type == Token.TokenType.LPAREN)
                     {
                         this.ParseVar(ref expr);
                     } else {
@@ -150,42 +151,51 @@ public partial class Parser
         
         //this.ReadToToken(Token.TokenType.RPAREN); //REMOVE THIS?
     }
-
+    
     public void ParseVar(ref Expression? expression)
     {
         string name = (string)tokens[index].value;
         Expression? ind = null;
 
-        index = index + 1;
-
-        if (tokens[index].type == Token.TokenType.LBRACK)
+        if (tokens[index + 1].type == Token.TokenType.LALLIGATOR ||
+            tokens[index + 1].type == Token.TokenType.LPAREN)
         {
-            index = index + 1;
-            this.ConsumeExpression2(ref ind); //take care of bracket exits here?
-            index = index + 1;
+            expression = this.ConsumeFunctionCall();
         }
-
-        //take care of . to chain the expression!
-        Expression.VariableReference rf = new Expression.VariableReference(name, null, null, null);
-        rf = rf with { index = ind };
-        
-        switch (tokens[index].type)
+        else
         {
-            case Token.TokenType.DOT:
+            index = index + 1;
+            
+            if (tokens[index].type == Token.TokenType.LBRACK)
             {
                 index = index + 1;
-                
-                Expression? r = null;
-                this.ParseVar(ref r);
-                
-                rf = rf with { chain = r };
-                r = (r as Expression.VariableReference) with { chainParent = rf };
-                
-                break;
+                this.ConsumeExpression2(ref ind); //take care of bracket exits here?
+                index = index + 1;
             }
+
+            //take care of . to chain the expression!
+            Expression.VariableReference rf = new Expression.VariableReference(name, null, null, null);
+            rf = rf with { index = ind };
+        
+            switch (tokens[index].type)
+            {
+                case Token.TokenType.DOT:
+                {
+                    index = index + 1;
+                
+                    Expression? r = null;
+                    this.ParseVar(ref r);
+                
+                    rf = rf with { chain = r };
+                    r = (r as Expression.VariableReference) with { chainParent = rf };
+                
+                    break;
+                }
+            }
+        
+            expression = rf;   
         }
         
-        expression = rf;
     }
 
     public string ResolveBooleanOperator(Token.TokenType[] tps)

@@ -57,7 +57,6 @@ public partial class Parser
             }
         }
 
-
         if (readingPrivateScope)
         {
             readingPrivateScope = false;

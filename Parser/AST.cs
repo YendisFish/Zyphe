@@ -47,7 +47,7 @@ public record Expression() : AstNode
         Expression? chain, 
         Expression? chainParent,
         List<GenericUsage>? generics = null,
-        List<Declaration.VariableDeclaration>? arguments = null) : Expression;
+        List<Expression>? arguments = null) : Expression;
     public record Literal(string word) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
 
     public record BooleanOperator : Expression

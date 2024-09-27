@@ -1,5 +1,7 @@
 ﻿string Add(let int1: int, let int2: int) {
-    let b: Thingy<Thingy<Thingy>> = 1 == 1;
+    if(x == SomeFunc<int>()) {
+    
+    }
 }
 
 struct Thingy<T where Thingy : A where Thingy, B> {
