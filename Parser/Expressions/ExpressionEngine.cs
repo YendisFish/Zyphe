@@ -17,6 +17,8 @@ public partial class Parser
                         namespaces.Contains((string)tokens[index].value) || 
                         tokens[index + 1].type == Token.TokenType.LALLIGATOR || tokens[index + 1].type == Token.TokenType.LPAREN)
                     {
+                        // todo : add detection for variables, namespaces, and functions that way you can give correct expression
+                        
                         this.ParseVar(ref expr);
                     } else {
                         // we can just return a literal right?
