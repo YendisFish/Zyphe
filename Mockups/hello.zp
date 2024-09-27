@@ -1,9 +1,5 @@
 ﻿string Add(let int1: int, let int2: int) {
     if(x == SomeFunc<int>()) {
-    
+        let x = 5; 
     }
-}
-
-struct Thingy<T where Thingy : A where Thingy, B> {
-    let x: Thingy<Thingy> { get; set; }
 }
