@@ -11,6 +11,7 @@ public partial class Parser
     public List<string> namespaces { get; set; } = new();
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
+    public bool readingStaticVar { get; set; } = false;
 
     public Parser(Token[] toks)
     {
@@ -208,6 +209,31 @@ public partial class Parser
             {
                 index = index + 1;
                 readingPrivateScope = true;
+
+                break;
+            }
+            case Token.KeywordType.STATIC:
+            {
+                index = index + 1;
+                readingStaticVar = true;
+
+                switch (tokens[index].keyword)
+                {
+                    case Token.KeywordType.REF:
+                    {
+                        index = index + 1;
+                        this.ConsumeRefVariable(ParserState.GLOBAL);
+                        break;
+                    }
+                    case Token.KeywordType.LET:
+                    {
+                        index = index + 1;
+                        this.ConsumeLetVariable(ParserState.GLOBAL);
+                        break;
+                    }
+                }
+                
+                readingStaticVar = false;
 
                 break;
             }

@@ -5,7 +5,8 @@ public record VariableInfo(
     string name,
     TypeInfo type,
     bool isProp = false,
-    bool isPrivate = false
+    bool isPrivate = false,
+    bool isStatic = false
 )
 {
     public Declaration.FunctionDeclaration? getter { get; set; } = null;

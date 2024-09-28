@@ -34,7 +34,7 @@ public partial class Parser
             }
         }
 
-        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, false, readingPrivateScope);
+        VariableInfo info = new VariableInfo(VariableIdentifier.LET, name, tInfo, false, readingPrivateScope, readingStaticVar);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
         declaration.Scope = currentNode.Scope;
@@ -81,7 +81,7 @@ public partial class Parser
             }
         }
 
-        VariableInfo info = new VariableInfo(VariableIdentifier.REF, name, tInfo, false, readingPrivateScope);
+        VariableInfo info = new VariableInfo(VariableIdentifier.REF, name, tInfo, false, readingPrivateScope, readingStaticVar);
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
         declaration.Scope = currentNode.Scope;
@@ -98,19 +98,25 @@ public partial class Parser
         }
     }
     
-    public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS)
+    public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS, bool skip = true)
     {
         string typeName = (string)tokens[index].value;
         List<GenericUsage> usages = null;
         
-        index = index + 1;
+        //index = index + 1;
         
-        if (tokens[index].type == Token.TokenType.LALLIGATOR)
+        if (tokens[index + 1].type == Token.TokenType.LALLIGATOR)
         {
+            index = index + 1;
             usages = this.ConsumeGenericUsages() ?? throw new NullReferenceException();
         }
+
+        index = index + 1;
         
-        this.ReadToToken(readToOverride);
+        /*if (skip)
+        {
+            this.ReadToToken(readToOverride);
+        }*/
         
         return new TypeInfo(typeName, usages);
     }
