@@ -92,6 +92,8 @@ public abstract record Statement() : AstNode
     {
         public bool isIfElse { get; set; } = false;
     }
+
+    public record UsingStatement(string module) : Statement;
     
     public record WhileStatement(Expression.BooleanOperator condition) : Statement;
 

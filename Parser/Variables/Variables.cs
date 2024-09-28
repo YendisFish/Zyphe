@@ -2,7 +2,7 @@
 
 public partial class Parser
 {
-    public void ConsumeLetVariable(ParserState returnState)
+    public void ConsumeLetVariable(ParserState returnState, bool isStatic = false)
     {
         state = ParserState.VARIABLE;
         
@@ -39,8 +39,16 @@ public partial class Parser
 
         declaration.Scope = currentNode.Scope;
         declaration.parent = currentNode;
+
+        if (isStatic)
+        {
+            declaredGlobals.Add(name);
+        }
+        else
+        {
+            declaredVariables.Add(name);   
+        }
         
-        declaredVariables.Add(name);
         currentNode.children.Add(declaration);
 
         state = returnState;
@@ -51,7 +59,7 @@ public partial class Parser
         }
     }
 
-    public void ConsumeRefVariable(ParserState returnState)
+    public void ConsumeRefVariable(ParserState returnState, bool isStatic = false)
     {
         string name = (string)tokens[index].value;
         TypeInfo? tInfo = null;
@@ -87,7 +95,15 @@ public partial class Parser
         declaration.Scope = currentNode.Scope;
         declaration.parent = currentNode;
         
-        declaredVariables.Add(name);
+        if (isStatic)
+        {
+            declaredGlobals.Add(name);
+        }
+        else
+        {
+            declaredVariables.Add(name);   
+        }
+        
         currentNode.children.Add(declaration);
 
         state = returnState;
@@ -119,5 +135,13 @@ public partial class Parser
         }*/
         
         return new TypeInfo(typeName, usages);
+    }
+
+    public bool IsDeclared(string pattern)
+    {
+        return declaredGlobals.Contains(pattern) || 
+               declaredProps.Contains(pattern) ||
+               namespaces.Contains(pattern) ||
+               declaredVariables.Contains(pattern);
     }
 }

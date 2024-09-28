@@ -8,6 +8,8 @@ public partial class Parser
     public AstNode currentNode { get; set; }
     public ParserState state { get; set; } = ParserState.GLOBAL;
     public List<string> declaredVariables { get; set; } = new();
+    public List<string> declaredGlobals { get; set; } = new();
+    public List<string> declaredProps { get; set; } = new();
     public List<string> namespaces { get; set; } = new();
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
@@ -51,6 +53,8 @@ public partial class Parser
                                 currentNode = ast.Root;
                                 this.Next();
                             }
+                            
+                            declaredVariables = new();
 
                             break;
                         }
@@ -59,6 +63,9 @@ public partial class Parser
                             state = ParserState.GLOBAL;
                             currentNode = ast.Root;
                             this.Next();
+                            
+                            declaredProps = new();
+                            
                             break;
                         }
 
@@ -107,6 +114,8 @@ public partial class Parser
                             state = ParserState.PROP;
                             this.Next();
 
+                            declaredVariables = new();
+                            
                             break;
                         }
 
@@ -120,6 +129,8 @@ public partial class Parser
                                 this.Next();
                             }
 
+                            declaredVariables = new();
+                            
                             break;
                         }
 
@@ -323,6 +334,18 @@ public partial class Parser
                         break;
                     }
                 }
+                break;
+            }
+            case Token.KeywordType.USING:
+            {
+                index = index + 1;
+                Statement.UsingStatement statement = new Statement.UsingStatement((string)tokens[index].value);
+                
+                ast.Root.children.Add(statement);
+                index = index + 1;
+
+                namespaces.Add(statement.module);
+
                 break;
             }
             default:

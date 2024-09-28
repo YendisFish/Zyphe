@@ -20,6 +20,7 @@ public partial class Parser
         decl.parent = currentNode;
         decl.Scope.returnNode = currentNode;
         
+        declaredProps.Add(name);
         currentNode.children.Add(decl);
         currentNode = decl;
     }

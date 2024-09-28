@@ -47,7 +47,6 @@ public class Token
         REF,
         CONST,
         FROM,
-        DO,
         STRUCT,
         SWITCH,
         RETURN,
@@ -56,7 +55,6 @@ public class Token
         NEW,
         BREAK,
         THROW,
-        TRY,
         CATCH,
         THIS,
         USING,
@@ -66,7 +64,8 @@ public class Token
         GET,
         SET,
         ENUM,
-        WHERE
+        WHERE,
+        NAMESPACE
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -124,6 +123,8 @@ public class Token
         { "else", KeywordType.ELSE },
         { "get", KeywordType.GET },
         { "set", KeywordType.SET },
-        { "where", KeywordType.WHERE }
+        { "where", KeywordType.WHERE },
+        { "enum", KeywordType.ENUM },
+        { "namespace", KeywordType.NAMESPACE },
     };
 }

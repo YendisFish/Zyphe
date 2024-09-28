@@ -13,12 +13,9 @@ public partial class Parser
             {
                 case Token.TokenType.WORD:
                 {
-                    if (declaredVariables.Contains((string)tokens[index].value) || 
-                        namespaces.Contains((string)tokens[index].value) || 
+                    if (this.IsDeclared((string)tokens[index].value) ||
                         tokens[index + 1].type == Token.TokenType.LALLIGATOR || tokens[index + 1].type == Token.TokenType.LPAREN)
-                    {
-                        // todo : add detection for variables, namespaces, and functions that way you can give correct expression
-                        
+                    { 
                         this.ParseVar(ref expr);
                     } else {
                         // we can just return a literal right?
