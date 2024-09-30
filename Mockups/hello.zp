@@ -1,7 +1,7 @@
 ﻿void Main() {
     let arr = new Array();
     for[let obj: int from arr] {
-        for[let obj2: int from arr] {
+        for[let obj2 = true] {
             while(arr.Length <= 1) {
             
             }

@@ -43,10 +43,10 @@ public partial class Parser
         {
             index = index + 1;
             tinf = this.ConsumeVarType();
-            index = index + 1;
+            //index = index + 1;
         }
 
-        //index = index + 1;
+        index = index + 1;
         Expression expr = null;
         this.ConsumeExpression2(ref expr);
         index = index + 1;
