@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Zyphe.Parser;
+﻿namespace Zyphe.Parser;
 
 public partial class Parser
 {
@@ -154,7 +152,7 @@ public partial class Parser
     public void ParseVar(ref Expression? expression)
     {
         string name = (string)tokens[index].value;
-        Expression? ind = null;
+        Expression.IndexExpression ind = null;
 
         if (tokens[index + 1].type == Token.TokenType.LALLIGATOR ||
             tokens[index + 1].type == Token.TokenType.LPAREN)
@@ -167,14 +165,14 @@ public partial class Parser
             
             if (tokens[index].type == Token.TokenType.LBRACK)
             {
+                ind = new Expression.IndexExpression();
+                
                 index = index + 1;
-                this.ConsumeExpression2(ref ind); //take care of bracket exits here?
-                index = index + 1;
+                this.ReadIndex(ref ind);
             }
 
             //take care of . to chain the expression!
             Expression.VariableReference rf = new Expression.VariableReference(name, null, null, null);
-            rf = rf with { index = ind };
         
             switch (tokens[index].type)
             {
@@ -191,10 +189,57 @@ public partial class Parser
                     break;
                 }
             }
+            
+            rf = rf with { index = ind };
         
             expression = rf;   
         }
         
+    }
+
+    public void ReadIndex(ref Expression.IndexExpression expr)
+    {
+        for (bool reading = true; reading;) 
+        {
+            switch (tokens[index].type)
+            {
+                case Token.TokenType.LBRACK:
+                {
+                    Expression.IndexExpression indC = new Expression.IndexExpression();
+
+                    index = index + 1;
+                    this.ReadIndex(ref indC);
+                    expr = expr with { indexChain = indC };
+
+                    //index = index + 1;
+
+                    break;
+                }
+                case Token.TokenType.RBRACK:
+                {
+                    if (tokens[index + 1].type == Token.TokenType.LBRACK)
+                    {
+                        index = index + 1;
+                    }
+                    else
+                    {
+                        reading = false;
+                    }
+                    break;
+                }
+                default:
+                {
+                    Expression temp = new Expression.IndexExpression();
+                    this.ConsumeExpression2(ref temp);
+
+                    expr = expr with { expr = temp };
+
+                    //index = index + 1;
+                    
+                    break;
+                }
+            }
+        }
     }
 
     public string ResolveBooleanOperator(Token.TokenType[] tps)

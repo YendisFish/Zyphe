@@ -1,11 +1,4 @@
-﻿using io;
-
-static ref x: string = "Hi!";
-
-string Add(let int1: int, let int2: int) {
-    let y: string = x[0]();
-
-    if(x == SomeFunc<int>()) {
-        let x = 5; 
-    }
+﻿void Main() {
+    let arr = 5;
+    let x = arr[0][100][200];
 }

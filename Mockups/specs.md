@@ -250,7 +250,7 @@ ref.UnsafeLengthSetter(&z, 100);
 ```
 
 2d Arrays
-```rs
+```csharp
 ref x: char[][] = new char[100][100];
 ref y: char[] = x[5]; // automatically passed as a reference since it is an array
 ref z: char = &y[0];

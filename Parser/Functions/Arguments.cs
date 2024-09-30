@@ -7,6 +7,11 @@ public partial class Parser
         List<VariableInfo> ret = new();
 
         index = index + 1;
+
+        if (tokens[index + 1].type == Token.TokenType.RPAREN)
+        {
+            return ret;
+        }
         
         for (bool reading = true; reading;)
         {

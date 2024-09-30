@@ -20,13 +20,14 @@ public partial class Parser
         List<Expression> arguments = this.ReadPassedArguments();
         //index = index + 1;
 
-        Expression? ind = null;
+        Expression.IndexExpression? ind = null;
         
         if (tokens[index].type == Token.TokenType.LBRACK)
         {
+            ind = new Expression.IndexExpression();
+                
             index = index + 1;
-            this.ConsumeExpression2(ref ind); //take care of bracket exits here?
-            index = index + 1;
+            this.ReadIndex(ref ind);
         }
 
         //take care of . to chain the expression!
