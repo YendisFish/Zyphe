@@ -112,8 +112,11 @@ public partial class Parser
 
                         case ParserState.WHILE:
                         {
-                            currentNode = currentNode.Scope.returnNode;
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
                             this.Next();
+                            
                             break;
                         }
 

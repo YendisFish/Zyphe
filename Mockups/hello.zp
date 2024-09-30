@@ -2,7 +2,9 @@
     let arr = new Array();
     for[let obj: int from arr] {
         for[let obj2: int from arr] {
-        
+            while(arr.Length <= 1) {
+            
+            }
         }
     }
 }

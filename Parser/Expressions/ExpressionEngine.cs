@@ -12,7 +12,8 @@ public partial class Parser
                 case Token.TokenType.WORD:
                 {
                     if (this.IsDeclared((string)tokens[index].value) ||
-                        tokens[index + 1].type == Token.TokenType.LALLIGATOR || tokens[index + 1].type == Token.TokenType.LPAREN)
+                        tokens[index + 1].type == Token.TokenType.LALLIGATOR  && tokens[index + 2].type != Token.TokenType.EQUALS ||
+                        tokens[index + 1].type == Token.TokenType.LPAREN)
                     { 
                         this.ParseVar(ref expr);
                     } else {
@@ -54,6 +55,8 @@ public partial class Parser
                     break;
                 }
 
+                case Token.TokenType.LALLIGATOR:
+                case Token.TokenType.RALLIGATOR:
                 case Token.TokenType.PIPE:
                 case Token.TokenType.NOT:
                 case Token.TokenType.EQUALS:
@@ -154,7 +157,7 @@ public partial class Parser
         string name = (string)tokens[index].value;
         Expression.IndexExpression ind = null;
 
-        if (tokens[index + 1].type == Token.TokenType.LALLIGATOR ||
+        if (tokens[index + 1].type == Token.TokenType.LALLIGATOR  && tokens[index + 2].type != Token.TokenType.EQUALS ||
             tokens[index + 1].type == Token.TokenType.LPAREN)
         {
             expression = this.ConsumeFunctionCall();
@@ -185,6 +188,8 @@ public partial class Parser
                 
                     rf = rf with { chain = r };
                     r = (r as Expression.VariableReference) with { chainParent = rf };
+
+                    //index = index + 1;
                 
                     break;
                 }
@@ -271,6 +276,18 @@ public partial class Parser
                 case Token.TokenType.NOT:
                 {
                     ret = ret + "!";
+                    break;
+                }
+
+                case Token.TokenType.RALLIGATOR:
+                {
+                    ret = ret + ">";
+                    break;
+                }
+                
+                case Token.TokenType.LALLIGATOR:
+                {
+                    ret = ret + "<";
                     break;
                 }
             }

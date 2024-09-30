@@ -59,6 +59,7 @@ public partial class Parser
         f.Scope.returnState = returnState;
         f.Scope.returnNode = currentNode;
         f.parent = currentNode;
+        f.Scope.parent = currentNode.Scope;
         
         currentNode.children.Add(f);
         currentNode = f;
