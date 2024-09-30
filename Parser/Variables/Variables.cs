@@ -114,7 +114,7 @@ public partial class Parser
         }
     }
     
-    public TypeInfo ConsumeVarType(Token.TokenType readToOverride = Token.TokenType.EQUALS, bool skip = true)
+    public TypeInfo ConsumeVarType()
     {
         string typeName = (string)tokens[index].value;
         List<GenericUsage> usages = null;
@@ -128,11 +128,6 @@ public partial class Parser
         }
 
         index = index + 1;
-        
-        /*if (skip)
-        {
-            this.ReadToToken(readToOverride);
-        }*/
         
         return new TypeInfo(typeName, usages);
     }

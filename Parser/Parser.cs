@@ -39,6 +39,15 @@ public partial class Parser
                 {
                     switch (state)
                     {
+                        case ParserState.FOR:
+                        {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
+                            this.Next();
+                            
+                            break;
+                        }
                         case ParserState.FUNCTION:
                         {
                             if ((currentNode as Declaration.FunctionDeclaration).isStructFunc)
@@ -172,6 +181,13 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.FOR:
+            {
+                index = index + 1;
+                this.ConsumeForLoop(state);
+
+                break;
+            }
             case Token.KeywordType.GET:
             {
                 index = index + 1;
@@ -213,7 +229,8 @@ public partial class Parser
             case Token.KeywordType.STRUCT:
             {
                 this.ConsumeStruct();
-
+                index = index + 1;
+                
                 break;
             }
             case Token.KeywordType.PRIVATE:
@@ -412,5 +429,6 @@ public enum ParserState
     IF,
     ELSE,
     WHILE,
-    GLOBAL
+    GLOBAL,
+    FOR
 }

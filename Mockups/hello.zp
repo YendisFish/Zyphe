@@ -1,4 +1,8 @@
 ﻿void Main() {
-    let arr = 5;
-    let x = arr[0][100][200];
+    let arr = new Array();
+    for[let obj: int from arr] {
+        for[let obj2: int from arr] {
+        
+        }
+    }
 }

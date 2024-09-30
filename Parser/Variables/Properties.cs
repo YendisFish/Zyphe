@@ -12,7 +12,7 @@ public partial class Parser
         index = index + 2;
         
         //consume var type
-        TypeInfo tInf = this.ConsumeVarType(Token.TokenType.LBRACE); //idk if the pipe works here?
+        TypeInfo tInf = this.ConsumeVarType(); //idk if the pipe works here?
         
         //construct variable signature
         VariableInfo vInf = new(identifier, name, tInf, true, readingPrivateScope);

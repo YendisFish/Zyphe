@@ -6,7 +6,8 @@ public record VariableInfo(
     TypeInfo type,
     bool isProp = false,
     bool isPrivate = false,
-    bool isStatic = false
+    bool isStatic = false,
+    bool isForIterator = false
 )
 {
     public Declaration.FunctionDeclaration? getter { get; set; } = null;

@@ -107,6 +107,9 @@ public abstract record Statement() : AstNode
         Declaration.VariableDeclaration? declaration,
         Expression.BooleanOperator? condition,
         Expression expression) : Statement;
+    
+    public record ForStatement2(Declaration.VariableDeclaration? declaration) : Statement;
+
 
     public record FromStatement(Expression.FunctionReference func, List<Case> cases, Default? fallback = null) : Statement;
 

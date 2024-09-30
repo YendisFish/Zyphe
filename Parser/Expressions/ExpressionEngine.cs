@@ -199,7 +199,7 @@ public partial class Parser
 
     public void ReadIndex(ref Expression.IndexExpression expr)
     {
-        for (bool reading = true; reading;) 
+        for (bool reading = true; reading;)
         {
             switch (tokens[index].type)
             {
