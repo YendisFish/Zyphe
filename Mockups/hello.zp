@@ -1,10 +1,5 @@
-﻿void Main() {
-    let arr = new Array();
-    for[let obj: int from arr] {
-        for[let obj2 = true] {
-            while(arr.Length <= 1) {
-            
-            }
-        }
+﻿void main() {
+    let arr = catch(foo()) {
+        let x = 5;
     }
 }

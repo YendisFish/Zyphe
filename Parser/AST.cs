@@ -20,6 +20,8 @@ public record AstNode
 
 public record Expression() : AstNode
 {
+    public record CatchExpression(FunctionReference func) : Expression();
+    
     public record BinaryOperator : Expression
     {
         public Expression? left { get; set; }
@@ -112,12 +114,6 @@ public abstract record Statement() : AstNode
 
 
     public record FromStatement(Expression.FunctionReference func, List<Case> cases, Default? fallback = null) : Statement;
-
-    public record TryCatchStatement(
-        Expression.FunctionReference target,
-        Declaration.VariableDeclaration catchVar,
-        AstNode tblock,
-        AstNode cblock) : Statement;
 
     public record SwitchStatement(Expression.VariableReference reference, List<Case> cases, Default? fallback = null) : Statement;
 }

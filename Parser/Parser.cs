@@ -39,6 +39,15 @@ public partial class Parser
                 {
                     switch (state)
                     {
+                        case ParserState.CATCH:
+                        {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
+                            this.Next();
+                            
+                            break;
+                        }
                         case ParserState.FOR:
                         {
                             state = currentNode.Scope.returnState ?? throw new NullReferenceException();
@@ -335,6 +344,7 @@ public partial class Parser
             {
                 switch (state)
                 {
+                    case ParserState.CATCH:
                     case ParserState.FUNCTION:
                     case ParserState.IF:
                     case ParserState.ELSE:
@@ -433,5 +443,6 @@ public enum ParserState
     ELSE,
     WHILE,
     GLOBAL,
-    FOR
+    FOR,
+    CATCH
 }

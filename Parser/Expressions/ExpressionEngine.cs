@@ -22,6 +22,8 @@ public partial class Parser
                         {
                             this.ParseNew(ref expr);
                             index = index + 1;
+                        } else if (tokens[index].keyword == Token.KeywordType.CATCH) {
+                            this.ConsumeCatch(ref expr);
                         } else {
                             expr = new Expression.Literal((string)tokens[index].value);
                             index = index + 1;
