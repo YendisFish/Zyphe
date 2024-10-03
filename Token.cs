@@ -65,7 +65,9 @@ public class Token
         SET,
         ENUM,
         WHERE,
-        NAMESPACE
+        NAMESPACE,
+        FREE,
+        DELETE
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -126,5 +128,7 @@ public class Token
         { "where", KeywordType.WHERE },
         { "enum", KeywordType.ENUM },
         { "namespace", KeywordType.NAMESPACE },
+        { "free", KeywordType.FREE },
+        { "delete", KeywordType.DELETE }
     };
 }

@@ -2,4 +2,6 @@
     let arr = catch(foo()) {
         let x = 5;
     }
+    
+    delete arr;
 }

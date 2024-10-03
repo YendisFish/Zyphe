@@ -7,7 +7,7 @@ public partial class Parser
     public AST ast { get; set; }
     public AstNode currentNode { get; set; }
     public ParserState state { get; set; } = ParserState.GLOBAL;
-    public List<string> declaredVariables { get; set; } = new();
+    public List<string> declaredVariables { get; set; } = new(); // todo : Change to List<VariableDeclaration> for better integration
     public List<string> declaredGlobals { get; set; } = new();
     public List<string> declaredProps { get; set; } = new();
     public List<string> namespaces { get; set; } = new();
@@ -193,6 +193,40 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.DELETE:
+            {
+                index = index + 1;
+
+                if (declaredVariables.Contains(tokens[index].value) ||
+                    declaredGlobals.Contains(tokens[index].value) ||
+                    declaredProps.Contains(tokens[index].value))
+                {
+                    Expression.VariableReference rf = new Expression.VariableReference((string)tokens[index].value,
+                        null,
+                        null,
+                        null);
+                    Expression.DeleteExpression expr = new Expression.DeleteExpression(rf);
+                    
+                    currentNode.children.Add(expr);
+                    index = index + 1;    
+                } else {
+                    throw new Exception("Could not find variable " + (string)tokens[index].value);
+                }
+                
+                break;
+            }
+            case Token.KeywordType.FREE:
+            {
+                index = index + 1;
+                
+                Expression ex = new();
+                this.ConsumeExpression2(ref ex);
+                
+                Expression.FreeExpression expr = new Expression.FreeExpression(ex);
+                currentNode.children.Add(expr);
+                
+                break;
+            }
             case Token.KeywordType.FOR:
             {
                 index = index + 1;

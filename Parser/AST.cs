@@ -20,7 +20,9 @@ public record AstNode
 
 public record Expression() : AstNode
 {
-    public record CatchExpression(FunctionReference func) : Expression();
+    public record CatchExpression(FunctionReference func) : Expression;
+    public record FreeExpression(Expression subject) : Expression;
+    public record DeleteExpression(VariableReference subject) : Expression;
     
     public record BinaryOperator : Expression
     {
