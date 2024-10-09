@@ -10,14 +10,11 @@ public partial class Parser
         this.ConsumeExpression2(ref fref);
 
         expr = new Expression.CatchExpression(fref as Expression.FunctionReference);
-
+        
         expr.parent = currentNode;
         expr.Scope.parent = currentNode.Scope.parent;
         expr.Scope.returnNode = currentNode;
-        expr.Scope.returnState = state;
-
-        //currentNode.children.Add(expr);
-        //currentNode = expr;
+        expr.Scope.returnState = ParserState.FUNCTION;
         
         state = ParserState.CATCH;
     }

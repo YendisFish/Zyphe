@@ -1,4 +1,7 @@
-﻿namespace Zyphe.Parser;
+﻿using System.Dynamic;
+using System.Runtime.InteropServices.JavaScript;
+
+namespace Zyphe.Parser;
 
 public partial class Parser
 {
@@ -7,9 +10,7 @@ public partial class Parser
     public AST ast { get; set; }
     public AstNode currentNode { get; set; }
     public ParserState state { get; set; } = ParserState.GLOBAL;
-    public List<string> declaredVariables { get; set; } = new(); // todo : Change to List<VariableDeclaration> for better integration
-    public List<string> declaredGlobals { get; set; } = new();
-    public List<string> declaredProps { get; set; } = new();
+    public VariableState declared { get; set; } = new();
     public List<string> namespaces { get; set; } = new();
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
@@ -71,8 +72,8 @@ public partial class Parser
                                 currentNode = ast.Root;
                                 this.Next();
                             }
-                            
-                            declaredVariables = new();
+
+                            declared.Variables = new();
 
                             break;
                         }
@@ -81,8 +82,9 @@ public partial class Parser
                             state = ParserState.GLOBAL;
                             currentNode = ast.Root;
                             this.Next();
-                            
-                            declaredProps = new();
+
+                            declared.Props = new();
+                            declared.Funcs = new();
                             
                             break;
                         }
@@ -135,7 +137,7 @@ public partial class Parser
                             state = ParserState.PROP;
                             this.Next();
 
-                            declaredVariables = new();
+                            declared.Variables = new();
                             
                             break;
                         }
@@ -150,7 +152,7 @@ public partial class Parser
                                 this.Next();
                             }
 
-                            declaredVariables = new();
+                            declared.Variables = new();
                             
                             break;
                         }
@@ -197,9 +199,7 @@ public partial class Parser
             {
                 index = index + 1;
 
-                if (declaredVariables.Contains(tokens[index].value) ||
-                    declaredGlobals.Contains(tokens[index].value) ||
-                    declaredProps.Contains(tokens[index].value))
+                if (IsDeclared((string)tokens[index].value))
                 {
                     Expression.VariableReference rf = new Expression.VariableReference((string)tokens[index].value,
                         null,
@@ -208,7 +208,7 @@ public partial class Parser
                     Expression.DeleteExpression expr = new Expression.DeleteExpression(rf);
                     
                     currentNode.children.Add(expr);
-                    index = index + 1;    
+                    index = index + 1;
                 } else {
                     throw new Exception("Could not find variable " + (string)tokens[index].value);
                 }

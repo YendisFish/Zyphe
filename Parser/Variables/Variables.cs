@@ -48,18 +48,20 @@ public partial class Parser
         declaration.Scope = currentNode.Scope;
         declaration.Scope.parent = currentNode.Scope;
         declaration.Scope.returnNode = currentNode;
-        declaration.Scope.returnState = state;
+        //declaration.Scope.returnState = state; //WHY IS THIS LINE DOING WHAT IT IS DOING?!?!?!?!?!?
         declaration.parent = currentNode;
         
         currentNode.children.Add(declaration);
 
         if (isStatic)
         {
-            declaredGlobals.Add(name);
+            declared.Globals.Add(declaration);
+            //declaredGlobals.Add(name);
         }
         else
         {
-            declaredVariables.Add(name);   
+            declared.Variables.Add(declaration);
+            //declaredVariables.Add(declaration);
         }
 
         if (expr is Expression.CatchExpression)
@@ -109,20 +111,30 @@ public partial class Parser
         Declaration.VariableDeclaration declaration = new Declaration.VariableDeclaration(info, expr);
 
         declaration.Scope = currentNode.Scope;
+        declaration.Scope.parent = currentNode.Scope;
+        declaration.Scope.returnNode = currentNode;
+        //declaration.Scope.returnState = state;
         declaration.parent = currentNode;
+        
+        currentNode.children.Add(declaration);
         
         if (isStatic)
         {
-            declaredGlobals.Add(name);
+            declared.Globals.Add(declaration);
+            //declaredGlobals.Add(name);
         }
         else
         {
-            declaredVariables.Add(name);   
+            declared.Variables.Add(declaration);
+            //declaredVariables.Add(declaration);   
         }
         
-        currentNode.children.Add(declaration);
+        if (expr is Expression.CatchExpression)
+        {
+            currentNode = expr;
+        }
 
-        state = returnState;
+        //state = returnState;
         
         if (readingPrivateScope)
         {
@@ -148,11 +160,13 @@ public partial class Parser
         return new TypeInfo(typeName, usages);
     }
 
-    public bool IsDeclared(string pattern)
-    {
-        return declaredGlobals.Contains(pattern) || 
-               declaredProps.Contains(pattern) ||
-               namespaces.Contains(pattern) ||
-               declaredVariables.Contains(pattern);
-    }
+    public bool IsDeclared(string pattern, bool varsOnly = false) => (varsOnly)
+        ? declared.Variables.Select(x => x.left.name).Contains(pattern) ||
+          declared.Globals.Select(x => x.left.name).Contains(pattern) ||
+          declared.Props.Select(x => x.left.name).Contains(pattern)
+        : declared.Variables.Select(x => x.left.name).Contains(pattern) ||
+          declared.Globals.Select(x => x.left.name).Contains(pattern) ||
+          declared.Props.Select(x => x.left.name).Contains(pattern) ||
+          declared.Funcs.Select(x => x.signature.name).Contains(pattern) ||
+          declared.GlobalFuncs.Select(x => x.signature.name).Contains(pattern);
 }

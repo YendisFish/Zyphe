@@ -25,8 +25,7 @@ public partial class Parser
                 currentNode.children.Add(declaration);
 
                 index = index + 2;
-
-                //this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS
+                
                 currentNode = declaration;
                 state = ParserState.FUNCTION;
 
@@ -47,9 +46,11 @@ public partial class Parser
                 declaration.Scope.parent = currentNode.Scope;
                 declaration.isStructFunc = isStructFunc;
                 declaration.parent = currentNode;
-
+                
                 currentNode.children.Add(declaration);
-                this.ReadToToken(Token.TokenType.LBRACE); // CHANGE TO LBRACE | EQUALS
+                
+                index = index + 2;
+                
                 currentNode = declaration;
                 state = ParserState.FUNCTION;
 

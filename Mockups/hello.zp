@@ -1,7 +1,15 @@
 ﻿void main() {
-    let arr = catch(foo()) {
+    let arr: Result<int, SomeErrorType> = catch(foo()) {
         let x = 5;
     }
     
     delete arr;
+}
+
+ref string X() {
+    let arr = 5;
+}
+
+struct A {
+    void X() { }
 }

@@ -16,13 +16,17 @@ public partial class Parser
         
         //construct variable signature
         VariableInfo vInf = new(identifier, name, tInf, true, readingPrivateScope);
-        Declaration.VariableDeclaration decl = new(vInf, null); // this is a prop so it cannot have an initializer outside of the constructor
-        decl.parent = currentNode;
-        decl.Scope.returnNode = currentNode;
+        Declaration.VariableDeclaration declaration = new(vInf, null); // this is a prop so it cannot have an initializer outside of the constructor
         
-        declaredProps.Add(name);
-        currentNode.children.Add(decl);
-        currentNode = decl;
+        declaration.Scope = currentNode.Scope;
+        declaration.Scope.parent = currentNode.Scope;
+        declaration.Scope.returnNode = currentNode;
+        declaration.Scope.returnState = state;
+        declaration.parent = currentNode;
+        
+        declared.Props.Add(declaration);
+        currentNode.children.Add(declaration);
+        currentNode = declaration;
     }
 
     public void ConsumeGetter()
