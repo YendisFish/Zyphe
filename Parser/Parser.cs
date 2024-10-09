@@ -36,6 +36,12 @@ public partial class Parser
                     break;
                 }
 
+                case Token.TokenType.LBRACE:
+                {
+                    this.Next();
+                    break;
+                }
+                
                 case Token.TokenType.RBRACE:
                 {
                     switch (state)
@@ -417,20 +423,19 @@ public partial class Parser
                 if (ast.Root.Scope.scopeId == currentNode.Scope.scopeId)
                 {
                     this.ConsumeFunctionSignature(VariableIdentifier.LET, false);
-                }
-
-                //identify a function in a struct and parse it 
-                if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
-                    tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
+                } else if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
+                            tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
                 {
                     this.ConsumeFunctionSignature(VariableIdentifier.LET, true);
+                } else {
+                    Expression? expr = null;
+                    this.ReadVariableAssignment(ref expr);
+
+                    expr.parent = currentNode;
+                    expr.Scope = currentNode.Scope;
+
+                    currentNode.children.Add(expr);
                 }
-
-                #region Consume Variable Expression
-
-                // todo: implement variable expressions
-
-                #endregion
 
                 break;
             }
@@ -478,5 +483,6 @@ public enum ParserState
     WHILE,
     GLOBAL,
     FOR,
+    FORSIG,
     CATCH
 }

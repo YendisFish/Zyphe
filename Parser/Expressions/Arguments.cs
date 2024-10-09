@@ -6,7 +6,7 @@ public partial class Parser
     {
         List<Expression> ret = new();
         
-        index = index + 1;
+        //index = index + 1;
 
         for (bool readingArgs = true; readingArgs == true;)
         {

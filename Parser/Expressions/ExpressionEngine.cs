@@ -12,8 +12,9 @@ public partial class Parser
                 case Token.TokenType.WORD:
                 {
                     if (this.IsDeclared((string)tokens[index].value) ||
-                        tokens[index + 1].type == Token.TokenType.LALLIGATOR  && tokens[index + 2].type != Token.TokenType.EQUALS ||
-                        tokens[index + 1].type == Token.TokenType.LPAREN)
+                        tokens[index + 1].type == Token.TokenType.LALLIGATOR &&
+                        tokens[index + 2].type != Token.TokenType.SEMICOLON ||
+                        tokens[index + 1].type == Token.TokenType.LPAREN) //we might have a problemmmm
                     { 
                         this.ParseVar(ref expr);
                     } else {
@@ -171,8 +172,9 @@ public partial class Parser
         string name = (string)tokens[index].value;
         Expression.IndexExpression ind = null;
 
-        if (tokens[index + 1].type == Token.TokenType.LALLIGATOR  && tokens[index + 2].type != Token.TokenType.EQUALS ||
-            tokens[index + 1].type == Token.TokenType.LPAREN)
+        if ((tokens[index + 1].type == Token.TokenType.LALLIGATOR  && 
+            tokens[index + 2].type != Token.TokenType.EQUALS ||
+            tokens[index + 1].type == Token.TokenType.LPAREN) && !IsSkippedLiteral((string)tokens[index + 2].value))
         {
             expression = this.ConsumeFunctionCall();
         }
@@ -201,7 +203,13 @@ public partial class Parser
                     this.ParseVar(ref r);
                 
                     rf = rf with { chain = r };
-                    r = (r as Expression.VariableReference) with { chainParent = rf };
+
+                    try
+                    {
+                        r = (r as Expression.VariableReference) with { chainParent = rf };
+                    } catch {
+                        r = (r as Expression.FunctionReference) with { chainParent = rf };
+                    }
 
                     //index = index + 1;
                 
@@ -210,8 +218,8 @@ public partial class Parser
             }
             
             rf = rf with { index = ind };
-        
-            expression = rf;   
+
+            expression = rf;
         }
         
     }
@@ -308,5 +316,35 @@ public partial class Parser
         }
 
         return ret;
+    }
+
+    public void ReadVariableAssignment(ref Expression expr)
+    {
+        Expression? vref = null;
+        this.ParseVar(ref vref);
+
+        //index = index + 1;
+
+        if (tokens[index].type == Token.TokenType.EQUALS)
+        {
+            Expression? assigment = null;
+            this.ConsumeExpression2(ref assigment);
+
+            expr = new Expression.VariableAssignment(vref as Expression.VariableReference, assigment);
+            index = index + 1;
+        } else {
+            expr = vref;
+        }
+    }
+
+    public bool IsSkippedLiteral(string value)
+    {
+        int y;
+        bool i = int.TryParse(value, out y);
+
+        byte a;
+        bool b = byte.TryParse(value, out a);
+
+        return i || b;
     }
 }

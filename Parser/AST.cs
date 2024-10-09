@@ -38,7 +38,7 @@ public record Expression() : AstNode
         }
     }
     public record UnaryOperator(Expression expr) : Expression;
-    public record VariableAssignment(string name, Expression right) : Expression;
+    public record VariableAssignment(VariableReference name, Expression right) : Expression;
     public record NewOperator(
         string name, 
         List<GenericUsage>? generics = null, 
@@ -113,7 +113,7 @@ public abstract record Statement() : AstNode
 
     public record ForStatement(
         Declaration.VariableDeclaration? declaration,
-        Expression.BooleanOperator? condition,
+        Expression? condition,
         Expression expression) : Statement;
     
     public record ForStatement2(Declaration.VariableDeclaration? declaration) : Statement;

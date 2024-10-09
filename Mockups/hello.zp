@@ -1,3 +1,8 @@
 ﻿void main() {
-    let array: List<int>[] = new List<int>[400 - 3];
+    let y = 3;
+    y = 5;
+    
+    for(let x: int = 5; x < 3; x = x + 1) {
+        io.conout();
+    }
 }
