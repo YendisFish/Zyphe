@@ -14,7 +14,6 @@ public class Lexer
             {
                 currentToken.type = Token.TokenType.WORD;
                 currentToken.value = "";
-                currentToken.isString = true;
                 i = i + 1;
                 for (; file[i] != '\"'; i++)
                 {
@@ -22,6 +21,8 @@ public class Lexer
                 }
 
                 i = i + 1;
+
+                currentToken.metadata = "string";
                 
                 ret.Add(currentToken);
                 currentToken = new();
@@ -31,7 +32,6 @@ public class Lexer
             {
                 currentToken.type = Token.TokenType.WORD;
                 currentToken.value = new char();
-                currentToken.isChar = true;
                 i = i + 1;
                 for (; file[i] != '\''; i++)
                 {
@@ -39,6 +39,8 @@ public class Lexer
                 }
 
                 i = i + 1;
+                
+                currentToken.metadata = "char";
                 
                 ret.Add(currentToken);
                 currentToken = new();

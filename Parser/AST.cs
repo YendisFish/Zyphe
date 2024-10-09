@@ -20,6 +20,8 @@ public record AstNode
 
 public record Expression() : AstNode
 {
+    public record TypeCast(VariableIdentifier ident, TypeInfo tinf, Expression? right) : Expression();
+    public record TypeCastArray(VariableIdentifier ident, TypeInfo tinf, Expression length, Expression? right) : Expression();
     public record CatchExpression(FunctionReference func) : Expression;
     public record FreeExpression(Expression subject) : Expression;
     public record DeleteExpression(VariableReference subject) : Expression;
@@ -56,7 +58,7 @@ public record Expression() : AstNode
         Expression? chainParent,
         List<GenericUsage>? generics = null,
         List<Expression>? arguments = null) : Expression;
-    public record Literal(string word) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
+    public record Literal(string word, string assumedType) : Expression; //this can be string, any integer type, or a boolean... parser will have to figure that out
 
     public record BooleanOperator : Expression
     {

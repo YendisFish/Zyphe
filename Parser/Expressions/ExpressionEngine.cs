@@ -26,7 +26,7 @@ public partial class Parser
                         } else if (tokens[index].keyword == Token.KeywordType.CATCH) {
                             this.ConsumeCatch(ref expr);
                         } else {
-                            expr = new Expression.Literal((string)tokens[index].value);
+                            expr = new Expression.Literal((string)tokens[index].value, tokens[index].metadata);
                             index = index + 1;
                         }
                     }
@@ -112,8 +112,15 @@ public partial class Parser
                     //Expression.BinaryOperator binOp = (Expression.BinaryOperator)expr;
 
                     index = index + 1;
-                    this.ConsumeExpression2(ref expr);
-                    index = index + 1;
+
+                    if (tokens[index].keyword == Token.KeywordType.LET || tokens[index].keyword == Token.KeywordType.REF)
+                    {
+                        this.ParseTypeCast(ref expr);
+                        //index = index + 1;
+                    } else {
+                        this.ConsumeExpression2(ref expr);
+                        index = index + 1;    
+                    }
                     
                     //this.ConsumeExpression2(binOp.left);
                     //this.ConsumeExpression2(binOp.right);
@@ -165,6 +172,34 @@ public partial class Parser
         }
         
         //this.ReadToToken(Token.TokenType.RPAREN); //REMOVE THIS?
+    }
+
+    public void ParseTypeCast(ref Expression? expr)
+    {
+        VariableIdentifier ident = (tokens[index].keyword == Token.KeywordType.LET || tokens[index].keyword == Token.KeywordType.REF) 
+            ? VariableIdentifier.LET : VariableIdentifier.REF;
+        
+        index = index + 1;
+        TypeInfo tinf = this.ConsumeVarType(false);
+        
+        if (tokens[index].type == Token.TokenType.LBRACK)
+        {
+            //index = index + 1;
+            Expression.IndexExpression? e = new Expression.IndexExpression();
+            this.ReadIndex(ref e);
+
+            index = index + 2;
+            Expression? r = null;
+            this.ConsumeExpression2(ref r);
+
+            expr = new Expression.TypeCastArray(ident, tinf, e, r);
+        } else {
+            index = index + 1;
+            Expression? r = null;
+            this.ConsumeExpression2(ref r);
+            
+            expr = new Expression.TypeCast(ident, tinf, r);
+        }
     }
     
     public void ParseVar(ref Expression? expression)

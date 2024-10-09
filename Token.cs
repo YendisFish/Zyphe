@@ -3,8 +3,7 @@ public class Token
     public TokenType type { get; set; }
     public KeywordType? keyword { get; set; } = null;
     public object? value { get; set; } = null;
-    public bool isString { get; set; } = false;
-    public bool isChar { get; set; } = false;
+    public string metadata { get; set; } = "";
 
     public enum TokenType 
     {

@@ -142,7 +142,7 @@ public partial class Parser
         }
     }
     
-    public TypeInfo ConsumeVarType()
+    public TypeInfo ConsumeVarType(bool readArray = true)
     {
         string typeName = (string)tokens[index].value;
         List<GenericUsage> usages = null;
@@ -159,7 +159,7 @@ public partial class Parser
         index = index + 1;
         
         //check for array
-        if (tokens[index].type == Token.TokenType.LBRACK)
+        if (tokens[index].type == Token.TokenType.LBRACK && readArray)
         {
             index = index + 1;
             isArray = true;

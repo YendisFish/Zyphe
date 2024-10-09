@@ -1,8 +1,3 @@
 ﻿void main() {
-    let y = 3;
-    y = 5;
-    
-    for(let x: int = 5; x < 3; x = x + 1) {
-        io.conout();
-    }
+    let y: int[] = (let int[100 + 3])"5";
 }
