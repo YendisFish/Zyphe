@@ -14,7 +14,7 @@ public record VariableInfo(
     public Declaration.FunctionDeclaration? setter { get; set; } = null;
 }
 
-public record TypeInfo(string name, List<GenericUsage>? generics = null);
+public record TypeInfo(string name, List<GenericUsage>? generics = null, bool isArray = false);
 
 public enum VariableIdentifier
 {

@@ -43,6 +43,10 @@ public record Expression() : AstNode
         string name, 
         List<GenericUsage>? generics = null, 
         List<Expression>? arguments = null) : Expression;
+    public record NewArrayOperator(
+        string name,
+        IndexExpression expr,
+        List<GenericUsage>? generics = null) : Expression;
     public record VariableReference(string name, IndexExpression? index, Expression? chain, Expression? chainParent)
         : Expression;
     public record FunctionReference(

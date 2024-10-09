@@ -146,6 +146,7 @@ public partial class Parser
     {
         string typeName = (string)tokens[index].value;
         List<GenericUsage> usages = null;
+        bool isArray = false;
         
         //index = index + 1;
         
@@ -157,7 +158,15 @@ public partial class Parser
 
         index = index + 1;
         
-        return new TypeInfo(typeName, usages);
+        //check for array
+        if (tokens[index].type == Token.TokenType.LBRACK)
+        {
+            index = index + 1;
+            isArray = true;
+            index = index + 1;
+        }
+        
+        return new TypeInfo(typeName, usages, isArray);
     }
 
     public bool IsDeclared(string pattern, bool varsOnly = false) => (varsOnly)

@@ -145,11 +145,23 @@ public partial class Parser
 
         index = index + 1;
         List<GenericUsage>? generics = this.ConsumeGenericUsages();
+        index = index + 1;
         
-        expr = new Expression.NewOperator(name, generics, null);
-
-        List<Expression> args = this.ReadPassedArguments();
-        expr = (expr as Expression.NewOperator ?? throw new NullReferenceException()) with { arguments = args };
+        if (tokens[index].type == Token.TokenType.LBRACK)
+        {
+            //index = index + 1;
+            Expression.IndexExpression? e = new Expression.IndexExpression();
+            this.ReadIndex(ref e);
+            
+            //index = index + 1;
+            
+            expr = new Expression.NewArrayOperator(name, e, generics);
+        } else {
+            expr = new Expression.NewOperator(name, generics, null);
+        
+            List<Expression> args = this.ReadPassedArguments();
+            expr = (expr as Expression.NewOperator ?? throw new NullReferenceException()) with { arguments = args };   
+        }
         
         //this.ReadToToken(Token.TokenType.RPAREN); //REMOVE THIS?
     }
