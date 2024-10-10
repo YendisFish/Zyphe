@@ -201,6 +201,15 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.THIS:
+            {
+                if (state == ParserState.STRUCT)
+                {
+                    this.ConsumeThisAccessor();
+                }
+
+                break;
+            }
             case Token.KeywordType.DELETE:
             {
                 index = index + 1;
