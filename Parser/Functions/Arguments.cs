@@ -34,6 +34,8 @@ public partial class Parser
                 }
             }
         }
+        
+        declared.Arguments.AddRange(ret);
 
         return ret;
     }

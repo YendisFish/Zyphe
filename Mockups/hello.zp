@@ -1,3 +1,7 @@
-﻿void main() {
-    let y: int[] = (let int[100 + 3])"5";
+﻿struct A {
+    let x: int { get; set; }
+
+    this : int +(let right: int) {
+        return x + right;
+    }
 }

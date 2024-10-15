@@ -13,9 +13,29 @@ public partial class Parser
             expr.Scope = currentNode.Scope;
 
             currentNode.children.Add(expr);
-        } else if(tokens[index + 1].type == Token.TokenType.SEMICOLON) {
-            // todo : implement this overloads
+        } else if(tokens[index + 1].type == Token.TokenType.COLON) {
+            index = index + 2;
             
+            switch (tokens[index].type)
+            {
+                //here you will have to read delete, free, constructors, and other things
+            }
+
+            Statement.ThisStatement statement = new Statement.ThisStatement(ThisStatementType.Function);
+
+            currentNode.children.Add(statement);
+
+            statement.Scope.parent = currentNode.Scope;
+            statement.parent = currentNode;
+            statement.Scope.returnState = state;
+            statement.Scope.returnNode = currentNode;
+            
+            currentNode = statement;
+            
+            state = ParserState.THIS;
+
+            //index = index + 1;
+
             /*
              * +
              * -
@@ -24,7 +44,9 @@ public partial class Parser
              * delete
              * free
              * T[INDEX]
-             * T()
+             * ClassName()
+             * let T(ClassName right)
+             * let ClassName(T right)
              */
         } else {
             throw new Exception("Invalid syntax used with \"this\" operator");

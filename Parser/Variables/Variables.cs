@@ -171,9 +171,11 @@ public partial class Parser
 
     public bool IsDeclared(string pattern, bool varsOnly = false) => (varsOnly)
         ? declared.Variables.Select(x => x.left.name).Contains(pattern) ||
+          declared.Arguments.Select(x => x.name).Contains(pattern) ||
           declared.Globals.Select(x => x.left.name).Contains(pattern) ||
           declared.Props.Select(x => x.left.name).Contains(pattern)
         : declared.Variables.Select(x => x.left.name).Contains(pattern) ||
+          declared.Arguments.Select(x => x.name).Contains(pattern) ||
           declared.Globals.Select(x => x.left.name).Contains(pattern) ||
           declared.Props.Select(x => x.left.name).Contains(pattern) ||
           declared.Funcs.Select(x => x.signature.name).Contains(pattern) ||

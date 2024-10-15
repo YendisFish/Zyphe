@@ -98,6 +98,9 @@ public abstract record Declaration(Namespace? nspace) : AstNode
 
 public abstract record Statement() : AstNode
 {
+    public record ReturnStatement(Expression expr) : Statement;
+    public record ThisStatement(ThisStatementType type) : Statement;
+    
     public record IfStatement(Expression condition) : Statement
     {
         public ElseStatement? elseBlock { get; set; } = null;
@@ -124,6 +127,20 @@ public abstract record Statement() : AstNode
     public record FromStatement(Expression.FunctionReference func, List<Case> cases, Default? fallback = null) : Statement;
 
     public record SwitchStatement(Expression.VariableReference reference, List<Case> cases, Default? fallback = null) : Statement;
+}
+
+public enum ThisStatementType
+{
+    Delete,
+    Free,
+    Constructor,
+    Plus,
+    Minus,
+    Divide,
+    Equals,
+    Conversion,
+    Indexer,
+    Function //gg its up to you to figure this out
 }
 
 /*

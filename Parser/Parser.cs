@@ -46,6 +46,15 @@ public partial class Parser
                 {
                     switch (state)
                     {
+                        case ParserState.THIS:
+                        {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
+                            this.Next();
+                            
+                            break;
+                        }
                         case ParserState.CATCH:
                         {
                             state = currentNode.Scope.returnState ?? throw new NullReferenceException();
@@ -80,6 +89,7 @@ public partial class Parser
                             }
 
                             declared.Variables = new();
+                            declared.Arguments = new();
 
                             break;
                         }
@@ -201,6 +211,18 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.RETURN:
+            {
+                index = index + 1;
+                
+                Expression? expr = null;
+                this.ConsumeExpression2(ref expr);
+
+                Statement.ReturnStatement statement = new(expr);
+                currentNode.children.Add(statement);
+
+                break;
+            }
             case Token.KeywordType.THIS:
             {
                 if (state == ParserState.STRUCT)
@@ -433,7 +455,7 @@ public partial class Parser
                 {
                     this.ConsumeFunctionSignature(VariableIdentifier.LET, false);
                 } else if ((tokens[index + 2].type == Token.TokenType.LALLIGATOR ||
-                            tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT)
+                            tokens[index + 2].type == Token.TokenType.LPAREN) && state == ParserState.STRUCT || state == ParserState.THIS)
                 {
                     this.ConsumeFunctionSignature(VariableIdentifier.LET, true);
                 } else {
@@ -492,6 +514,6 @@ public enum ParserState
     WHILE,
     GLOBAL,
     FOR,
-    FORSIG,
-    CATCH
+    CATCH,
+    THIS
 }

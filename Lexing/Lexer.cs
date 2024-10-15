@@ -27,7 +27,7 @@ public class Lexer
                 ret.Add(currentToken);
                 currentToken = new();
             }
-            
+
             if (file[i] == '\'')
             {
                 currentToken.type = Token.TokenType.WORD;
@@ -55,12 +55,14 @@ public class Lexer
                     currentToken.type = Token.TokenType.WORD;
                     currentToken.value = current;
                     ret.Add(currentToken);
-
+                    
                     currentToken = new();
                     current = "";
                 }
                 
                 currentToken.type = type;
+                currentToken.value = file[i] + ""; //currentToken.value = current
+                
                 ret.Add(currentToken);
                 currentToken = new();
             } else {
