@@ -3,7 +3,7 @@
 public record VariableInfo(
     VariableIdentifier vType,
     string name,
-    TypeInfo type,
+    TypeInfo? type = null,
     bool isProp = false,
     bool isPrivate = false,
     bool isStatic = false,

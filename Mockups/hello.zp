@@ -3,12 +3,5 @@
         return y;
     }
     
-    switch(x("Hello, World!")) {
-        case "Hello, World" => delegate() {
-            return x;
-        }
-        case "Goodbye, World!" => Func();
-    }
+    x(delegate z => z == "Hi!");
 }
-
-void Func() { }
