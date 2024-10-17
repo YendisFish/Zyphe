@@ -14,9 +14,16 @@ public partial class Parser
                     new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.LET, this.ConsumeType()),
                     (string)tokens[index].value,
                     readingPrivateScope,
-                    this.ParseArgs(),
                     isExtern: readingExtern
                 );
+
+                if (tokens[index + 1].type == Token.TokenType.LALLIGATOR)
+                {
+                    index = index + 2;
+                    signature = signature with { generics = this.ConsumeGenerics() };
+                }
+                
+                signature = signature with { arguments = this.ParseArgs() };
 
                 Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
                 declaration.Scope.parent = currentNode.Scope;
@@ -46,7 +53,8 @@ public partial class Parser
                     (string)tokens[index].value,
                     readingPrivateScope,
                     this.ParseArgs(),
-                    isExtern: readingExtern
+                    this.ConsumeGenerics(),
+                    readingExtern
                 );
 
                 Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);

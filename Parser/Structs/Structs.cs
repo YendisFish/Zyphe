@@ -10,15 +10,24 @@ public partial class Parser
         currentTypeName = name;
         
         List<Generic> generics = null;
+        bool isBound = false;
+        VariableIdentifier? ident = null;
         
         if (tokens[index + 1].type == Token.TokenType.LALLIGATOR)
         {
             index = index + 2;
             generics = this.ConsumeGenerics() ?? throw new NullReferenceException();
-            index = index + 1;
+            //index = index + 1;
         }
-                
-        StructInfo sInfo = new StructInfo(name, generics, null);
+
+        if (tokens[index + 1].type == Token.TokenType.COLON)
+        {
+            index = index + 2;
+            isBound = true;
+            ident = (tokens[index].keyword == Token.KeywordType.LET) ? VariableIdentifier.LET : VariableIdentifier.REF;
+        }
+
+        StructInfo sInfo = new StructInfo(name, generics, null, isBound, ident);
         Declaration.StructDeclaration structDecl = new Declaration.StructDeclaration(sInfo);
 
         currentNode.children.Add(structDecl);
