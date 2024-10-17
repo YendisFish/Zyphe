@@ -380,7 +380,10 @@ public partial class Parser
         Expression? vref = null;
         this.ParseVar(ref vref);
 
-        //index = index + 1;
+        if (tokens[index + 1].type == Token.TokenType.EQUALS)
+        {
+            index = index + 1;
+        }
 
         if (tokens[index].type == Token.TokenType.EQUALS)
         {

@@ -118,7 +118,6 @@ public partial class Parser
         declaration.Scope = currentNode.Scope;
         declaration.Scope.parent = currentNode.Scope;
         declaration.Scope.returnNode = currentNode;
-        //declaration.Scope.returnState = state;
         declaration.parent = currentNode;
         
         currentNode.children.Add(declaration);

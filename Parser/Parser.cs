@@ -237,6 +237,11 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.FIXED:
+            {
+                this.ConsumeFixed();
+                break;
+            }
             case Token.KeywordType.EXTERN:
             {
                 index = index + 1;

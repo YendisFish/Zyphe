@@ -1,11 +1,4 @@
 ﻿void Main() {
-    let x: string = delegate(let y: string) {
-        return y;
-    }
-    
-    x(delegate z => z == "Hi!");
-    
-    let f: string = sizeof struct string;
+    fixed x: int[100 + (100 + 3) / 2];
+    x[0] = 5;
 }
-
-extern void TestFunc();

@@ -67,7 +67,8 @@ public class Token
         NAMESPACE,
         FREE,
         DELETE,
-        SIZEOF
+        SIZEOF,
+        FIXED
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -131,6 +132,7 @@ public class Token
         { "namespace", KeywordType.NAMESPACE },
         { "free", KeywordType.FREE },
         { "delete", KeywordType.DELETE },
-        { "sizeof", KeywordType.SIZEOF }
+        { "sizeof", KeywordType.SIZEOF },
+        { "fixed", KeywordType.FIXED }
     };
 }
