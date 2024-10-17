@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Zyphe;
 using Zyphe.Parser;
+
+Stopwatch watch = new();
 
 string fle = File.ReadAllText("./Mockups/hello.zp");
 
 bool debug = args.Contains("--debug");
 
+watch.Start();
 Token[] toks = Lexer.Tokenize(fle);
 toks = Lexer.RemoveWhitespace(toks);
 
@@ -36,4 +40,7 @@ if(debug)
     Console.WriteLine(json);
 }
 
+watch.Stop();
+
 Console.WriteLine("Done Compiling!");
+Console.WriteLine($"Time: {watch.Elapsed.TotalSeconds}ms");
