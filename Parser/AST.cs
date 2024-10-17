@@ -116,7 +116,8 @@ public abstract record Statement() : AstNode
     }
 
     public record UsingStatement(string module) : Statement;
-    
+
+    public record NamespaceStatement(string module) : Statement;
     public record WhileStatement(Expression.BooleanOperator condition) : Statement;
 
     public record ForStatement(

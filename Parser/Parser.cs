@@ -237,6 +237,16 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.NAMESPACE:
+            {
+                index = index + 1;
+                Statement.NamespaceStatement statement = new Statement.NamespaceStatement((string)tokens[index].value);
+                
+                ast.Root.children.Add(statement);
+                index = index + 1;
+                
+                break;
+            }
             case Token.KeywordType.FIXED:
             {
                 this.ConsumeFixed();
