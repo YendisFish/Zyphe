@@ -69,6 +69,11 @@ public partial class Parser
             currentNode = expr;
         }
         
+        if (expr is Expression.Delegate)
+        {
+            currentNode = expr;
+        }
+        
         //state = returnState;
         
         if (readingPrivateScope)
@@ -130,6 +135,11 @@ public partial class Parser
         }
         
         if (expr is Expression.CatchExpression)
+        {
+            currentNode = expr;
+        }
+
+        if (expr is Expression.Delegate)
         {
             currentNode = expr;
         }

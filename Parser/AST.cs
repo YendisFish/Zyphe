@@ -20,8 +20,9 @@ public record AstNode
 
 public record Expression() : AstNode
 {
-    public record TypeCast(VariableIdentifier ident, TypeInfo tinf, Expression? right) : Expression();
-    public record TypeCastArray(VariableIdentifier ident, TypeInfo tinf, Expression length, Expression? right) : Expression();
+    public record Delegate(List<VariableInfo> argument) : Expression;
+    public record TypeCast(VariableIdentifier ident, TypeInfo tinf, Expression? right) : Expression;
+    public record TypeCastArray(VariableIdentifier ident, TypeInfo tinf, Expression length, Expression? right) : Expression;
     public record CatchExpression(FunctionReference func) : Expression;
     public record FreeExpression(Expression subject) : Expression;
     public record DeleteExpression(VariableReference subject) : Expression;

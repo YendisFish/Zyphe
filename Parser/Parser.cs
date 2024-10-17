@@ -46,12 +46,21 @@ public partial class Parser
                 {
                     switch (state)
                     {
-                        case ParserState.THIS:
+                        case ParserState.DELEGATE:
                         {
                             state = currentNode.Scope.returnState ?? throw new NullReferenceException();
                             currentNode = currentNode.parent ?? throw new NullReferenceException();
                             
                             this.Next();
+                            
+                            break;
+                        }
+                        case ParserState.THIS:
+                        {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
+                            //this.Next();
                             
                             break;
                         }
@@ -498,6 +507,8 @@ public partial class Parser
             index = index + 1;
         }
     }
+    
+    public bool CanBeIgnored(string keyword) => (keyword == "delegate");
 }
 
 public enum ParserState
@@ -515,5 +526,6 @@ public enum ParserState
     GLOBAL,
     FOR,
     CATCH,
-    THIS
+    THIS,
+    DELEGATE
 }

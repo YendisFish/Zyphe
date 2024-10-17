@@ -1,7 +1,7 @@
-﻿struct A {
-    let x: int { get; set; }
-
-    this : int +(let right: int) {
-        return x + right;
+﻿void Main() {
+    let y: delegate<string, string> = delegate(let x: string) {
+        return x;
     }
 }
+
+void Test(let x: string) {}

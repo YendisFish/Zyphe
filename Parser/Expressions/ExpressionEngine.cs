@@ -11,10 +11,11 @@ public partial class Parser
             {
                 case Token.TokenType.WORD:
                 {
-                    if (this.IsDeclared((string)tokens[index].value) ||
+                    if (!this.CanBeIgnored((string)tokens[index].value) && 
+                        (this.IsDeclared((string)tokens[index].value) ||
                         tokens[index + 1].type == Token.TokenType.LALLIGATOR &&
                         tokens[index + 2].type != Token.TokenType.SEMICOLON ||
-                        tokens[index + 1].type == Token.TokenType.LPAREN) //we might have a problemmmm
+                        tokens[index + 1].type == Token.TokenType.LPAREN)) //we might have a problemmmm
                     { 
                         this.ParseVar(ref expr);
                     } else {
@@ -25,6 +26,8 @@ public partial class Parser
                             index = index + 1;
                         } else if (tokens[index].keyword == Token.KeywordType.CATCH) {
                             this.ConsumeCatch(ref expr);
+                        } else if (tokens[index].keyword == Token.KeywordType.DELEGATE) {
+                            this.ConsumeDelegate(ref expr);
                         } else {
                             expr = new Expression.Literal((string)tokens[index].value, tokens[index].metadata);
                             index = index + 1;
