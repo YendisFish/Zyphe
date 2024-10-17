@@ -8,7 +8,6 @@ public class Token
     public enum TokenType 
     {
         WORD,
-        VALUE,
         SEMICOLON,
         COLON,
         LBRACE,
@@ -48,6 +47,7 @@ public class Token
         FROM,
         STRUCT,
         SWITCH,
+        CASE,
         RETURN,
         CONTINUE,
         EXTERN,
@@ -110,6 +110,7 @@ public class Token
         { "from", KeywordType.FROM },
         { "struct", KeywordType.STRUCT },
         { "switch", KeywordType.SWITCH },
+        { "case", KeywordType.CASE },
         { "return", KeywordType.RETURN },
         { "continue", KeywordType.CONTINUE },
         { "extern", KeywordType.EXTERN },

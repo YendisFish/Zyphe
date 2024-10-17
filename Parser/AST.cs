@@ -124,10 +124,9 @@ public abstract record Statement() : AstNode
     
     public record ForStatement2(Declaration.VariableDeclaration? declaration) : Statement;
 
-
-    public record FromStatement(Expression.FunctionReference func, List<Case> cases, Default? fallback = null) : Statement;
-
-    public record SwitchStatement(Expression.VariableReference reference, List<Case> cases, Default? fallback = null) : Statement;
+    public record SwitchStatement(Expression expression) : Statement;
+    public record CaseStatement(Expression expression, Expression right) : Statement;
+    public record DefaultStatement(Expression expression, Expression right) : Statement;
 }
 
 public enum ThisStatementType

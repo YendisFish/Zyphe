@@ -30,7 +30,7 @@ if(debug)
     {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
     };
-    
+
     string json = JsonConvert.SerializeObject(parser.ast, Formatting.Indented, settings);
     
     Console.WriteLine(json);

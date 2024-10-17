@@ -10,6 +10,7 @@ public partial class Parser
 
         if (tokens[index + 1].type == Token.TokenType.RPAREN)
         {
+            index = index + 1;
             return ret;
         }
         

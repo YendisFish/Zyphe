@@ -1,17 +1,14 @@
 ﻿void Main() {
-    let y: delegate<string, string> = delegate(let x: string) {
-        return x;
+    let x: string = delegate(let y: string) {
+        return y;
+    }
+    
+    switch(x("Hello, World!")) {
+        case "Hello, World" => delegate() {
+            return x;
+        }
+        case "Goodbye, World!" => Func();
     }
 }
 
-struct A {
-    this : let string {
-        get {
-        
-        }
-        
-        set {
-        
-        }
-    }
-}
+void Func() { }

@@ -48,6 +48,15 @@ public partial class Parser
                 {
                     switch (state)
                     {
+                        case ParserState.SWITCH:
+                        {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            currentNode = currentNode.parent ?? throw new NullReferenceException();
+                            
+                            this.Next();
+                            
+                            break;
+                        }
                         case ParserState.DELEGATE:
                         {
                             state = currentNode.Scope.returnState ?? throw new NullReferenceException();
@@ -227,6 +236,16 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.SWITCH:
+            {
+                this.ConsumeSwitch();
+                break;
+            }
+            case Token.KeywordType.CASE:
+            {
+                this.ConsumeCase();
+                break;
+            }
             case Token.KeywordType.RETURN:
             {
                 index = index + 1;
@@ -553,5 +572,6 @@ public enum ParserState
     FOR,
     CATCH,
     THIS,
-    DELEGATE
+    DELEGATE,
+    SWITCH
 }

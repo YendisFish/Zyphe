@@ -13,8 +13,10 @@ public partial class Parser
         expr.parent = currentNode;
         expr.Scope.parent = currentNode.Scope.parent;
         expr.Scope.returnNode = currentNode;
-        expr.Scope.returnState = ParserState.FUNCTION;
+        expr.Scope.returnState = state;
         
         state = ParserState.DELEGATE;
+
+        //index = index + 1;
     }
 }
