@@ -100,7 +100,7 @@ public abstract record Declaration(Namespace? nspace) : AstNode
 public abstract record Statement() : AstNode
 {
     public record ReturnStatement(Expression expr) : Statement;
-    public record ThisStatement(ThisStatementType type) : Statement;
+    public record ThisStatement(ThisStatementType type, List<VariableInfo>? arguments = null) : Statement;
     
     public record IfStatement(Expression condition) : Statement
     {
@@ -135,13 +135,9 @@ public enum ThisStatementType
     Delete,
     Free,
     Constructor,
-    Plus,
-    Minus,
-    Divide,
-    Equals,
     Conversion,
     Indexer,
-    Function //gg its up to you to figure this out
+    Operator
 }
 
 /*

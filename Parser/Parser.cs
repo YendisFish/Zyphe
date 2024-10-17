@@ -1,5 +1,5 @@
 ﻿using System.Dynamic;
-using System.Runtime.InteropServices.JavaScript;
+using Microsoft.VisualBasic;
 
 namespace Zyphe.Parser;
 
@@ -15,6 +15,8 @@ public partial class Parser
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
     public bool readingStaticVar { get; set; } = false;
+    public string currentTypeName { get; set; } = "";
+    public VariableInfo currentConversionType { get; set; }
 
     public Parser(Token[] toks)
     {
@@ -60,7 +62,7 @@ public partial class Parser
                             state = currentNode.Scope.returnState ?? throw new NullReferenceException();
                             currentNode = currentNode.parent ?? throw new NullReferenceException();
                             
-                            //this.Next();
+                            this.Next();
                             
                             break;
                         }
@@ -94,6 +96,7 @@ public partial class Parser
                             {
                                 state = ParserState.GLOBAL;
                                 currentNode = ast.Root;
+
                                 this.Next();
                             }
 
@@ -110,6 +113,7 @@ public partial class Parser
 
                             declared.Props = new();
                             declared.Funcs = new();
+                            currentTypeName = "";
                             
                             break;
                         }
@@ -158,8 +162,10 @@ public partial class Parser
 
                         case ParserState.GETTER:
                         {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
                             currentNode = currentNode.Scope.returnNode;
-                            state = ParserState.PROP;
+                            //state = currentNode.Scope.returnState ?? throw new NullReferenceException();
+                            
                             this.Next();
 
                             declared.Variables = new();
@@ -169,8 +175,9 @@ public partial class Parser
 
                         case ParserState.SETTER:
                         {
+                            state = currentNode.Scope.returnState ?? throw new NullReferenceException();
                             currentNode = currentNode.Scope.returnNode;
-                            state = ParserState.PROP;
+                            //state = currentNode.Scope.returnState ?? throw new NullReferenceException();
 
                             if (tokens[index + 1].type == Token.TokenType.RBRACE)
                             {
@@ -282,15 +289,33 @@ public partial class Parser
             }
             case Token.KeywordType.GET:
             {
-                index = index + 1;
-                this.ConsumeGetter();
+                if (state == ParserState.THIS)
+                {
+                    index = index + 1;
+                    this.ConsumeThisGetter();
+                }
+                else
+                {
+                    index = index + 1;
+                    this.ConsumeGetter();
+                }
+                
                 break;
             }
 
             case Token.KeywordType.SET:
             {
-                index = index + 1;
-                this.ConsumeSetter();
+                if (state == ParserState.THIS)
+                {
+                    index = index + 1;
+                    this.ConsumeThisSetter();
+                }
+                else
+                {
+                    index = index + 1;
+                    this.ConsumeSetter();
+                }
+                
                 break;
             }
 
@@ -424,6 +449,7 @@ public partial class Parser
             {
                 switch (state)
                 {
+                    case ParserState.THIS:
                     case ParserState.CATCH:
                     case ParserState.FUNCTION:
                     case ParserState.IF:

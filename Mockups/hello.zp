@@ -4,4 +4,14 @@
     }
 }
 
-void Test(let x: string) {}
+struct A {
+    this : let string {
+        get {
+        
+        }
+        
+        set {
+        
+        }
+    }
+}

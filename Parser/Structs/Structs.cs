@@ -5,7 +5,10 @@ public partial class Parser
     public void ConsumeStruct()
     {
         index = index + 1;
+        
         string name = (string)tokens[index].value;
+        currentTypeName = name;
+        
         List<Generic> generics = null;
         
         if (tokens[index + 1].type == Token.TokenType.LALLIGATOR)

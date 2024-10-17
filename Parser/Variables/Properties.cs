@@ -31,7 +31,6 @@ public partial class Parser
 
     public void ConsumeGetter()
     {
-        state = ParserState.GETTER;
         Declaration.VariableDeclaration decl = (Declaration.VariableDeclaration)currentNode;
         
         switch(tokens[index].type)
@@ -53,7 +52,8 @@ public partial class Parser
                 Declaration.FunctionDeclaration func = new Declaration.FunctionDeclaration(signature);
                 
                 decl.left.getter = func;
-                
+
+                func.Scope.returnState = ParserState.PROP;
                 func.Scope.returnNode = decl;
                 currentNode = func;
                 
@@ -67,11 +67,12 @@ public partial class Parser
         {
             readingPrivateScope = false;
         }
+        
+        state = ParserState.GETTER;
     }
     
     public void ConsumeSetter()
     {
-        state = ParserState.SETTER;
         Declaration.VariableDeclaration decl = (Declaration.VariableDeclaration)currentNode;
         
         switch(tokens[index].type)
@@ -94,6 +95,7 @@ public partial class Parser
                 
                 decl.left.setter = func;
 
+                func.Scope.returnState = ParserState.PROP;
                 func.Scope.returnNode = decl;
                 currentNode = func;
                 
@@ -102,5 +104,7 @@ public partial class Parser
         }
         
         this.Next();
+        
+        state = ParserState.SETTER;
     }
 }
