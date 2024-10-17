@@ -66,7 +66,8 @@ public class Token
         WHERE,
         NAMESPACE,
         FREE,
-        DELETE
+        DELETE,
+        SIZEOF
     }
     
     public static Dictionary<char, TokenType> tokenMatches = new Dictionary<char, TokenType>
@@ -129,6 +130,7 @@ public class Token
         { "enum", KeywordType.ENUM },
         { "namespace", KeywordType.NAMESPACE },
         { "free", KeywordType.FREE },
-        { "delete", KeywordType.DELETE }
+        { "delete", KeywordType.DELETE },
+        { "sizeof", KeywordType.SIZEOF }
     };
 }

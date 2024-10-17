@@ -15,6 +15,7 @@ public partial class Parser
     public Statement.IfStatement? rootStatement { get; set; }
     public bool readingPrivateScope { get; set; } = false;
     public bool readingStaticVar { get; set; } = false;
+    public bool readingExtern { get; set; } = false;
     public string currentTypeName { get; set; } = "";
     public VariableInfo currentConversionType { get; set; }
 
@@ -236,6 +237,13 @@ public partial class Parser
     {
         switch (tokens[index].keyword)
         {
+            case Token.KeywordType.EXTERN:
+            {
+                index = index + 1;
+                readingExtern = true;
+                
+                break;
+            }
             case Token.KeywordType.SWITCH:
             {
                 this.ConsumeSwitch();

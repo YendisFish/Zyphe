@@ -14,7 +14,8 @@ public partial class Parser
                     new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.LET, this.ConsumeType()),
                     (string)tokens[index].value,
                     readingPrivateScope,
-                    this.ParseArgs()
+                    this.ParseArgs(),
+                    isExtern: readingExtern
                 );
 
                 Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
@@ -25,6 +26,11 @@ public partial class Parser
                 currentNode.children.Add(declaration);
 
                 index = index + 2;
+
+                if (signature.isExtern)
+                {
+                    break;
+                }
                 
                 currentNode = declaration;
                 state = ParserState.FUNCTION;
@@ -39,7 +45,8 @@ public partial class Parser
                     new Tuple<VariableIdentifier, TypeInfo>(VariableIdentifier.REF, this.ConsumeType()),
                     (string)tokens[index].value,
                     readingPrivateScope,
-                    this.ParseArgs()
+                    this.ParseArgs(),
+                    isExtern: readingExtern
                 );
 
                 Declaration.FunctionDeclaration declaration = new Declaration.FunctionDeclaration(signature);
@@ -50,7 +57,12 @@ public partial class Parser
                 currentNode.children.Add(declaration);
                 
                 index = index + 2;
-                
+
+                if (signature.isExtern)
+                {
+                    break;
+                }
+
                 currentNode = declaration;
                 state = ParserState.FUNCTION;
 
@@ -61,6 +73,11 @@ public partial class Parser
         if (readingPrivateScope)
         {
             readingPrivateScope = false;
+        }
+
+        if (readingExtern)
+        {
+            readingExtern = false;
         }
     }
 

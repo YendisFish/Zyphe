@@ -28,6 +28,25 @@ public partial class Parser
                             this.ConsumeCatch(ref expr);
                         } else if (tokens[index].keyword == Token.KeywordType.DELEGATE) {
                             this.ConsumeDelegate(ref expr);
+                        } else if (tokens[index].keyword == Token.KeywordType.SIZEOF) {
+                            index = index + 1;
+                            
+                            if(tokens[index].keyword == Token.KeywordType.STRUCT)
+                            {
+                                index = index + 1;
+                                TypeInfo inf = this.ConsumeVarType();
+
+                                expr = new Expression.SizeOf2(inf);
+                            }
+                            else
+                            {
+                                Expression? right = null;
+                                this.ConsumeExpression2(ref right);
+
+                                expr = new Expression.SizeOf(right);
+                            }
+
+                            //index = index + 1;
                         } else {
                             expr = new Expression.Literal((string)tokens[index].value, tokens[index].metadata);
                             index = index + 1;
@@ -36,7 +55,7 @@ public partial class Parser
                 
                     break;
                 }
-
+                
                 case Token.TokenType.COMMA:
                 {
                     reading = false;

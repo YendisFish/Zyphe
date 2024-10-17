@@ -20,6 +20,8 @@ public record AstNode
 
 public record Expression() : AstNode
 {
+    public record SizeOf(Expression right) : Expression;
+    public record SizeOf2(TypeInfo type) : Expression;
     public record Delegate(List<VariableInfo> argument) : Expression;
     public record TypeCast(VariableIdentifier ident, TypeInfo tinf, Expression? right) : Expression;
     public record TypeCastArray(VariableIdentifier ident, TypeInfo tinf, Expression length, Expression? right) : Expression;

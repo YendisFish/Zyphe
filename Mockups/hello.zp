@@ -4,4 +4,8 @@
     }
     
     x(delegate z => z == "Hi!");
+    
+    let f: string = sizeof struct string;
 }
+
+extern void TestFunc();
